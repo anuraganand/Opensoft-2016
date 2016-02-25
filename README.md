@@ -1,2 +1,2 @@
-# opensoft-2016
+# Opensoft-2016
 Repository for LBS Opensoft
