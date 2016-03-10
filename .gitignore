@@ -1,0 +1,13 @@
+# ignore compiled python files
+*.pyc
+
+# ignore pdfs
+*.pdf
+
+# ignore images
+*.png
+*.ppm
+*.jpg
+
+# ignore output
+*.out
