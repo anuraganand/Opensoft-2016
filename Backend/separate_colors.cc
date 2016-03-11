@@ -9,6 +9,7 @@ using namespace std;
 using namespace cv;
 
 const int HSV_THRESH = 15;
+RNG rng(12345);
 
 const int dx[] = {-1, -1, -1, 0, 0, +1, +1, +1};
 const int dy[] = {-1, 0, +1, -1, +1, -1, 0, +1};
@@ -56,6 +57,235 @@ void bfs(const Mat& img, vector < vector <int> >& visited, int x, int y, int hVa
         }
     }
 }
+
+void removeIsolated(Mat& img) {
+    for (int x = 0; x < img.rows; ++x) {
+        for (int y = 0; y < img.cols; ++y) {
+            int val = img.at<uchar>(x, y);
+            if (val > 200) {
+                int countWhiteNeighs = 0;
+                for (int k = 0; k < 8; ++k) {
+                    int nx = x + dx[k];
+                    int ny = y + dy[k];
+                    if (nx >= 0 and nx < img.rows and ny >= 0 and ny < img.cols) {
+                        if (img.at<uchar>(nx, ny) > 200)
+                            ++countWhiteNeighs;
+                    }
+                }
+                if (countWhiteNeighs <= 2) {
+                    img.at<uchar>(x, y) = 0;
+                }
+            }
+        }
+    }
+}
+
+void erode(Mat& img) {
+    vector < pair <int, int> > toBlack;
+    for (int x = 0; x < img.rows; ++x) {
+        for (int y = 0; y < img.cols; ++y) {
+            if (img.at<uchar>(x, y) < 200)
+                continue;
+            int cnt = 0;
+            for (int dx = -1; dx <= +1; ++dx) {
+                for (int dy = -1; dy <= +1; ++dy) {
+                    int nx = x + dx;
+                    int ny = y + dy;
+                    if (nx >= 0 and nx < img.rows and ny >= 0 and ny < img.cols) {
+                        if (img.at<uchar>(nx, ny) > 200)
+                            ++cnt;
+                    }
+                }
+            }
+            if (cnt <= 5)
+                toBlack.push_back(make_pair(x, y));
+        }
+    }
+    for (int i = 0; i < toBlack.size(); ++i) {
+        img.at<uchar>(toBlack[i].first, toBlack[i].second) = 0;
+    }
+}
+
+void dilate(Mat& img) {
+    vector < pair <int, int> > toWhite;
+    for (int x = 0; x < img.rows; ++x) {
+        for (int y = 0; y < img.cols; ++y) {
+            if (img.at<uchar>(x, y) > 200)
+                continue;
+            int cnt = 0;
+            for (int dx = -1; dx <= +1; ++dx) {
+                for (int dy = -1; dy <= +1; ++dy) {
+                    int nx = x + dx;
+                    int ny = y + dy;
+                    if (nx >= 0 and nx < img.rows and ny >= 0 and ny < img.cols) {
+                        if (img.at<uchar>(nx, ny) > 200)
+                            ++cnt;
+                    }
+                }
+            }
+            if (cnt >= 2)
+                toWhite.push_back(make_pair(x, y));
+        }
+    }
+    for (int i = 0; i < toWhite.size(); ++i) {
+        img.at<uchar>(toWhite[i].first, toWhite[i].second) = 255;
+    }
+}
+
+struct Data {
+    int x, y;
+    int w;
+
+    Data(int x, int y, int w) : x(x), y(y), w(w) {}
+
+    bool operator < (const Data& o) const {
+        return w > o.w;
+    }
+};
+
+const int MAX_DIST = 50;
+
+void dijkstra(Mat& img, const pair <int, int>& src, const pair <int, int>& dst) {
+    if (abs(src.first - dst.first) * abs(src.first - dst.first) + abs(src.second - dst.second) * abs(src.second - dst.second) <= 5000)
+        line(img, Point(src.second, src.first), Point(dst.second, dst.first), Scalar(255), 1);
+
+    /*
+    // cout<<src.first<<" "<<src.second<<"  "<<dst.first<<" "<<dst.second<<endl;
+    priority_queue <Data> Q;
+    
+    map < pair <int, int>, bool> visited;
+    map < pair <int, int>, int> dist;
+    map < pair <int, int>, pair <int, int> > parent;
+    
+    Q.push (Data(src.first, src.second, 0));
+    dist[src] = 0;
+    parent[src] = make_pair(-1, -1);
+
+    while (!Q.empty()) {
+        Data p = Q.top();
+        Q.pop();
+
+        if (visited.count(make_pair(p.x, p.y)))
+            continue;
+        
+        visited[make_pair(p.x, p.y)] = true;
+
+        if (p.x == dst.first and p.y == dst.second) {
+            break;
+        }
+
+        int x = p.x;
+        int y = p.y;
+        int d = dist[make_pair(x, y)];
+
+        for (int k = 0; k < 8; ++k) {
+            int nx = x + dx[k];
+            int ny = y + dy[k];
+            pair <int, int> q(nx, ny);
+            if (nx >= 0 and nx < img.rows and ny >= y and ny < img.cols) {
+                if (visited.count(q))
+                    continue;
+                if (abs(nx - src.first) <= MAX_DIST and abs(ny - src.second) <= MAX_DIST) {
+                    if (!dist.count(q)) {
+                        dist[q] = d + 1;
+                        Q.push(Data(nx, ny, d + 1));
+                        parent[q] = make_pair(x, y);
+                    } else if (d + 1 < dist[q]) {
+                        dist[q] = d + 1;
+                        Q.push(Data(nx, ny, d + 1));
+                        parent[q] = make_pair(x, y);
+                    }
+                }
+            }
+        }
+    }
+
+
+    int x, y;
+
+    auto p = parent[{x, y}];
+    int i = dst.first;
+    int j = dst.second;
+    if (!parent.count(dst))
+        return;
+    
+    while(i != src.first && j != src.second){
+        assert(parent.count({i, j}));
+        img.at<uchar>(i, j) = 255;
+        i = parent[{i,j}].first;
+        j = parent[{i,j}].second;
+    }
+
+    */
+}
+
+void fillGaps(Mat& img) {
+    vector <int> temp(img.cols);
+    int a = -1, b = -1;
+    for (int y = 0; y < img.cols; ++y)
+            temp[y] = 0;
+
+    vector < pair < pair <int, int>, pair <int, int> > > toFill;
+    for (int y = 0; y < img.cols; ++y) {
+        for (int x = 0; x < img.rows; ++x) {
+            if(img.at<uchar>(x,y) > 200 && y > 0){
+                temp[y] = 1;
+                if(temp[y-1] == 1) {
+                    a = x;
+                    b = y;
+                } else if (a != -1 and b != -1) {
+                    toFill.push_back({{a, b}, {x, y}});
+                }
+            }
+       }
+    }
+
+    for (int i = 0; i < toFill.size(); ++i) {
+        dijkstra(img, toFill[i].first, toFill[i].second);
+    }
+}
+
+void showContours(Mat& src_gray) {
+    blur( src_gray, src_gray, Size(3,3) );
+    static string str = "a";
+    Mat threshold_output;
+    vector<vector<Point> > contours;
+    vector<Vec4i> hierarchy;
+
+    /// Detect edges using Threshold
+    threshold( src_gray, threshold_output, 100, 255, THRESH_BINARY );
+    /// Find contours
+    findContours( threshold_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
+
+    /// Approximate contours to polygons + get bounding rects and circles
+    vector<vector<Point> > contours_poly( contours.size() );
+    vector<Rect> boundRect( contours.size() );
+    vector<Point2f>center( contours.size() );
+    vector<float>radius( contours.size() );
+
+    for( int i = 0; i < contours.size(); i++ )
+     { approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true );
+       boundRect[i] = boundingRect( Mat(contours_poly[i]) );
+       minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
+     }
+
+
+    /// Draw polygonal contour + bonding rects + circles
+    Mat drawing = Mat::zeros( threshold_output.size(), CV_8UC3 );
+    for( int i = 0; i< contours.size(); i++ )
+     {
+       Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+       drawContours( drawing, contours_poly, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
+       rectangle( drawing, boundRect[i].tl(), boundRect[i].br(), color, 2, 8, 0 );
+       circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
+     }
+
+    /// Show in a window
+    namedWindow( "Contours_" + str, CV_WINDOW_NORMAL);
+    imshow( "Contours_" + str, drawing );
+    str[0]++;
+}
+
 
 void separateColors(Mat& img) {
     Mat dst;
@@ -162,23 +392,28 @@ void separateColors(Mat& img) {
         for (int y = 0; y < img.cols; ++y) {
             if (visited[x][y] == -1)
                 continue;
-            // printf("setting for %d\n", visited[x][y]);
             int id = eqClass[visited[x][y]];
             separated[id].at<uchar>(x, y) = 255;
             ++cnt[id];
         }
     }
 
-    const Mat kernel = cv::getStructuringElement(
-                     cv::MORPH_RECT, cv::Size(2, 2));
+    const Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
 
     for (int i = 0; i < separated.size(); ++i) {
         if (cnt[i] < 150)
             continue;
         string win(1, 'a' + i);
+        erode(separated[i]);
+        dilate(separated[i]);
         // morphologyEx(separated[i], separated[i], MORPH_OPEN, kernel, Point(-1,-1), 1);
+        erode(separated[i]);
+        fillGaps(separated[i]);
+        
         namedWindow(win, WINDOW_NORMAL);
         imshow(win, separated[i]);
+        // showContours(separated[i]);
+        imwrite(win + ".png", separated[i]);
     }
 }
 
