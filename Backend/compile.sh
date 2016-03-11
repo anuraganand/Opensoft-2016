@@ -1,0 +1,1 @@
+g++ -std=c++0x $1 `pkg-config --cflags --libs opencv`
