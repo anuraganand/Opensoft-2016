@@ -5,12 +5,26 @@
  */
 package lbsopensoft;
 
+import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 /**
  *
  * @author ghost_000
  */
 public class home extends javax.swing.JFrame {
 
+    int isfilepicked = 0;
+    FileNameExtensionFilter filterpdf = new FileNameExtensionFilter("PDF Documents", "pdf");
+    FileNameExtensionFilter filterimage = new FileNameExtensionFilter("Images", "jpeg", "jpg", "png");
     /**
      * Creates new form home
      */
@@ -18,6 +32,70 @@ public class home extends javax.swing.JFrame {
         initComponents();
         this.pack();
         this.setLocationRelativeTo(null);
+        filename.setVisible(false);
+        loadergif.setVisible(false);
+        File homedir = new File(System.getProperty("user.home"));
+        File currdir = new File(System.getProperty("user.dir"));
+        pickpdf.setCurrentDirectory(homedir);
+        pickpdf.setFileFilter(filterpdf);
+        pickimage.setCurrentDirectory(homedir);
+        pickimage.setFileFilter(filterimage);
+        pdf.addMouseListener(new MouseAdapter()  
+        {  
+            public void mouseClicked(MouseEvent e)  
+            {
+                if(pickpdf.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    isfilepicked = 1;
+                    File[] files = pickpdf.getSelectedFiles();
+                    File file = pickpdf.getSelectedFile();
+                    filename.setText("Uploaded: " + pickpdf.getSelectedFile());
+                    filename.setVisible(true);
+                }
+            }  
+        });
+        image.addMouseListener(new MouseAdapter()  
+        {  
+            public void mouseClicked(MouseEvent e)  
+            {
+                if(pickimage.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    isfilepicked = 1;
+                    File[] files = pickimage.getSelectedFiles();
+                    File file = pickimage.getSelectedFile();
+                    filename.setText("Uploaded: " + pickimage.getSelectedFile());
+                    filename.setVisible(true);
+                }
+            }  
+        });
+        convert.addMouseListener(new MouseAdapter()  
+        {  
+            public void mouseClicked(MouseEvent e)  
+            {
+                if (isfilepicked!=0)
+                {
+                    loadergif.setVisible(true);
+                } 
+                else {
+                    filename.setText("Pick a file first!");
+                    filename.setVisible(true);
+                }
+            }  
+        });
+        report.addMouseListener(new MouseAdapter()  
+        {  
+            public void mouseClicked(MouseEvent e)  
+            {
+                Desktop desktop = Desktop.getDesktop();
+                if (desktop.isSupported(Desktop.Action.OPEN)) {
+                    try {
+                        desktop.open(new File("opensoft-report.pdf"));
+                    } catch (IOException ex) {
+                        Logger.getLogger(home.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    System.out.println("Open is not supported");
+                }
+            }  
+        });
     }
 
     /**
@@ -29,19 +107,23 @@ public class home extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        pickpdf = new javax.swing.JFileChooser();
+        pickimage = new javax.swing.JFileChooser();
         background = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
+        foreground = new javax.swing.JPanel();
+        title = new javax.swing.JLabel();
+        hall = new javax.swing.JLabel();
+        pdf = new javax.swing.JLabel();
+        image = new javax.swing.JLabel();
+        convert = new javax.swing.JLabel();
+        filename = new javax.swing.JLabel();
+        opensoft = new javax.swing.JLabel();
+        report = new javax.swing.JLabel();
+        loadergif = new javax.swing.JLabel();
         fg = new javax.swing.JLabel();
         bg = new javax.swing.JLabel();
+
+        pickpdf.setDialogTitle("Choose your PDF");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Welcome!");
@@ -55,79 +137,79 @@ public class home extends javax.swing.JFrame {
         background.setPreferredSize(new java.awt.Dimension(1000, 750));
         background.setLayout(null);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setMaximumSize(new java.awt.Dimension(900, 650));
-        jPanel1.setMinimumSize(new java.awt.Dimension(900, 650));
-        jPanel1.setPreferredSize(new java.awt.Dimension(900, 650));
-        jPanel1.setLayout(null);
+        foreground.setBackground(new java.awt.Color(255, 255, 255));
+        foreground.setMaximumSize(new java.awt.Dimension(900, 650));
+        foreground.setMinimumSize(new java.awt.Dimension(900, 650));
+        foreground.setPreferredSize(new java.awt.Dimension(900, 650));
+        foreground.setLayout(null);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Plots to Tables");
-        jPanel1.add(jLabel1);
-        jLabel1.setBounds(235, 100, 450, 60);
+        title.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        title.setForeground(new java.awt.Color(255, 255, 255));
+        title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        title.setText("Plots to Tables");
+        foreground.add(title);
+        title.setBounds(235, 100, 450, 60);
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("LAL BAHADUR SHASTRI HALL OF RESIDENCE");
-        jPanel1.add(jLabel2);
-        jLabel2.setBounds(325, 600, 280, 30);
+        hall.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        hall.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        hall.setText("LAL BAHADUR SHASTRI HALL OF RESIDENCE");
+        foreground.add(hall);
+        hall.setBounds(5, 600, 910, 30);
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("Upload PDF");
-        jLabel3.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 1, true));
-        jPanel1.add(jLabel3);
-        jLabel3.setBounds(275, 250, 150, 30);
+        pdf.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        pdf.setForeground(new java.awt.Color(255, 255, 255));
+        pdf.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        pdf.setText("Upload PDF");
+        pdf.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 1, true));
+        foreground.add(pdf);
+        pdf.setBounds(275, 250, 150, 30);
 
-        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel4.setText("Upload Image");
-        jLabel4.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 1, true));
-        jPanel1.add(jLabel4);
-        jLabel4.setBounds(500, 250, 150, 30);
+        image.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        image.setForeground(new java.awt.Color(255, 255, 255));
+        image.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        image.setText("Upload Image");
+        image.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 1, true));
+        foreground.add(image);
+        image.setBounds(500, 250, 150, 30);
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("CONVERT !");
-        jLabel5.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 1, true));
-        jPanel1.add(jLabel5);
-        jLabel5.setBounds(275, 325, 375, 30);
+        convert.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        convert.setForeground(new java.awt.Color(255, 255, 255));
+        convert.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        convert.setText("CONVERT !");
+        convert.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 1, true));
+        foreground.add(convert);
+        convert.setBounds(275, 325, 375, 30);
 
-        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText("Uploaded : ");
-        jPanel1.add(jLabel6);
-        jLabel6.setBounds(275, 290, 375, 30);
+        filename.setForeground(new java.awt.Color(255, 255, 255));
+        filename.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        filename.setText("Uploaded : ");
+        foreground.add(filename);
+        filename.setBounds(5, 290, 890, 30);
 
-        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel7.setText("OPENSOFT 2016");
-        jPanel1.add(jLabel7);
-        jLabel7.setBounds(325, 570, 280, 30);
+        opensoft.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        opensoft.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        opensoft.setText("OPENSOFT 2016");
+        foreground.add(opensoft);
+        opensoft.setBounds(5, 570, 910, 30);
 
-        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel8.setText("REPORT");
-        jLabel8.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
-        jPanel1.add(jLabel8);
-        jLabel8.setBounds(325, 530, 280, 30);
+        report.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        report.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        report.setText("DOCUMENTATION");
+        report.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        foreground.add(report);
+        report.setBounds(325, 530, 280, 30);
 
-        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/lbsopensoft/ajax-loader.gif"))); // NOI18N
-        jPanel1.add(jLabel9);
-        jLabel9.setBounds(0, 360, 900, 130);
+        loadergif.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        loadergif.setIcon(new javax.swing.ImageIcon(getClass().getResource("/lbsopensoft/ajax-loader.gif"))); // NOI18N
+        foreground.add(loadergif);
+        loadergif.setBounds(0, 360, 900, 130);
 
         fg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/lbsopensoft/fg.png"))); // NOI18N
-        jPanel1.add(fg);
+        foreground.add(fg);
         fg.setBounds(0, 0, 900, 650);
 
-        background.add(jPanel1);
-        jPanel1.setBounds(50, 50, 900, 650);
+        background.add(foreground);
+        foreground.setBounds(50, 50, 900, 650);
 
         bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/lbsopensoft/bgb.png"))); // NOI18N
         background.add(bg);
@@ -185,16 +267,18 @@ public class home extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel background;
     private javax.swing.JLabel bg;
+    private javax.swing.JLabel convert;
     private javax.swing.JLabel fg;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel filename;
+    private javax.swing.JPanel foreground;
+    private javax.swing.JLabel hall;
+    private javax.swing.JLabel image;
+    private javax.swing.JLabel loadergif;
+    private javax.swing.JLabel opensoft;
+    private javax.swing.JLabel pdf;
+    private javax.swing.JFileChooser pickimage;
+    private javax.swing.JFileChooser pickpdf;
+    private javax.swing.JLabel report;
+    private javax.swing.JLabel title;
     // End of variables declaration//GEN-END:variables
 }
