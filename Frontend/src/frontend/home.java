@@ -11,6 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -25,10 +26,13 @@ public class home extends javax.swing.JFrame {
     int isfilepicked = 0;
     FileNameExtensionFilter filterpdf = new FileNameExtensionFilter("PDF Documents", "pdf");
     FileNameExtensionFilter filterimage = new FileNameExtensionFilter("Images", "jpeg", "jpg", "png");
+    String RESOLUTION = "100";
+    String selectedFile = "";
     /**
      * Creates new form home
      */
     public home() {
+        
         initComponents();
         this.pack();
         this.setLocationRelativeTo(null);
@@ -40,6 +44,8 @@ public class home extends javax.swing.JFrame {
         pickpdf.setFileFilter(filterpdf);
         pickimage.setCurrentDirectory(homedir);
         pickimage.setFileFilter(filterimage);
+        pickpdf.setMultiSelectionEnabled(true);
+        pickimage.setMultiSelectionEnabled(true);
         pdf.addMouseListener(new MouseAdapter()  
         {  
             public void mouseClicked(MouseEvent e)  
@@ -47,7 +53,19 @@ public class home extends javax.swing.JFrame {
                 if(pickpdf.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     isfilepicked = 1;
                     File[] files = pickpdf.getSelectedFiles();
-                    File file = pickpdf.getSelectedFile();
+                    System.err.println("Number of files " + files.length);
+                    for (File file : files) {
+                        System.err.println("File name " + file.getAbsolutePath());
+                        try {
+                            String cmd = "python ../Backend/pdf2png.py " + RESOLUTION + " " + file;
+                            Process p = Runtime.getRuntime().exec(cmd);
+                            p.waitFor();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
                     filename.setText("Uploaded: " + pickpdf.getSelectedFile());
                     filename.setVisible(true);
                 }
@@ -73,6 +91,8 @@ public class home extends javax.swing.JFrame {
                 if (isfilepicked!=0)
                 {
                     loadergif.setVisible(true);
+                    
+                    
                 } 
                 else {
                     filename.setText("Pick a file first!");
