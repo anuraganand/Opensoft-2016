@@ -57,6 +57,7 @@ def gs_pdf_to_png(pdffilepath, resolution):
     pdffilename = os.path.basename(pdffilepath)
     pdfname, ext = os.path.splitext(pdffilepath)
 
+    pdfname_without_ext = pdffilename.split('.')[0]
     try:
         # Change the "-rXXX" option to set the PNG's resolution.
         # http://ghostscript.com/doc/current/Devices.htm#File_formats
@@ -66,7 +67,7 @@ def gs_pdf_to_png(pdffilepath, resolution):
         arglist = [GHOSTSCRIPTCMD,
                   "-dBATCH",
                   "-dNOPAUSE",
-                  "-sOutputFile=../Images/input%03d.png",# % pdfname,
+                  "-sOutputFile=../Images/Input/" + pdfname_without_ext + "%03d.png",
                   "-sDEVICE=png16m",
                   "-r%s" % resolution,
                   pdffilepath]
