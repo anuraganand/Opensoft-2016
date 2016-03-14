@@ -15,3 +15,8 @@ sudo ldconfig -v
 g++ -c create_table.cc -o create_table.o
 gcc create_table.o -L"/usr/local/lib" -lhpdf -o create_table
 ```
+
+## Installing ghostscript
+```shell
+sudo apt-get install ghostscript
+```
