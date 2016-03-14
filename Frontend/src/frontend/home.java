@@ -78,7 +78,19 @@ public class home extends javax.swing.JFrame {
                 if(pickimage.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     isfilepicked = 1;
                     File[] files = pickimage.getSelectedFiles();
-                    File file = pickimage.getSelectedFile();
+                    System.err.println("Number of files " + files.length);
+                    for (File file : files) {
+                        System.err.println("File name " + file.getAbsolutePath());
+                        try {
+                            String cmd = "cp " + file + " ../Images/Input/";
+                            Process p = Runtime.getRuntime().exec(cmd);
+                            p.waitFor();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
                     filename.setText("Uploaded: " + pickimage.getSelectedFile());
                     filename.setVisible(true);
                 }
