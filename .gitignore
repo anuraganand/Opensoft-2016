@@ -6,8 +6,12 @@
 
 # ignore images
 *.png
+!Frontend/src/frontend/*.png
+!Frontend/build/classes/frontend/*.png
 *.ppm
 *.jpg
+!Frontend/src/frontend/*.jpg
+!Frontend/build/classes/frontend/*.jpg
 
 # ignore output
 *.out
