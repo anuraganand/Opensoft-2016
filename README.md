@@ -19,10 +19,9 @@ sudo ldconfig -v
 ```shell
 python pdf2png.py
 ```
-The output images will be saved in ```shell Images```
+The output images will be saved in Images/
 
-
-
+Image names input001.png, input002.png, ...
 
 ## Compiling create_table.cc
 ```shell
