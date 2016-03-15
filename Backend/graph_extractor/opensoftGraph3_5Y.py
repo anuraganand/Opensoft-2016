@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
-img = cv2.imread('graph0_fftx.jpg',0)
+img = cv2.imread('graph0_ffty.jpg',0)
 f = np.fft.fft2(img)
 fshift = np.fft.fftshift(f)
 magnitude_spectrum = 20*np.log(np.abs(fshift))
@@ -25,7 +25,7 @@ plt.subplot(132),plt.imshow(img_back, cmap = 'gray')
 plt.title('Image after HPF'), plt.xticks([]), plt.yticks([])
 plt.subplot(133),plt.imshow(img_back)
 plt.title('Result in JET'), plt.xticks([]), plt.yticks([])
-cv2.imwrite("image_tick_tackX.jpg", img_back)
+cv2.imwrite("image_tick_tackY.jpg", img_back)
 # print len(plt.xticks([10]))
 
 plt.show()

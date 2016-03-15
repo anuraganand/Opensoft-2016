@@ -24,7 +24,8 @@ map<int,pair<pair<pair<int,int>,int>,int> > mappedLines;
 bool alreadyFunced=false;
 int countImages=0;
 int minx,miny,maxx,maxy;
-
+string graphName;
+string directoryName;
 
 void giveValues(Vec4i &res,pair<pair<pair<int,int>,int>,int> a){
 	res[0]=a.first.first.first;
@@ -36,44 +37,6 @@ void giveValues(Vec4i &res,pair<pair<pair<int,int>,int>,int> a){
 
 
 void cutout(int minx,int miny,int maxx,int maxy){
-	/*vector<pair<int,int> > points;
-	points.push_back(make_pair(minx,miny));
-	points.push_back(make_pair(minx,maxy));
-	points.push_back(make_pair(maxx,miny));
-	points.push_back(make_pair(maxx,maxy));
-
-	int left = ((double)maxx-minx)/10.0;
-	int up = ((double)maxy-miny)/10.0;
-	int fx,fy,height,width;
-	int maxrows = src.rows,maxcols = src.cols;
-	fx = (minx - left);
-	fy = (miny - up);
-	width = (maxx-minx+2*left);
-	height = (maxy-miny+2*up);
-	if( fx < 0)
-		fx = 0;
-	if(fy < 0)
-		fy = 0;
-	if((maxx+left) >= maxcols-1)
-		width = maxcols-fx-1;
-	if((maxy+up) >= maxrows-1)
-		height = maxrows-fy-1;
-	printf("Coordi-> %d %d %d %d\n",minx,miny,maxx,maxy);
-	printf("cutout vals -> %d %d %d %d %d %d %d %d\n",fx+width,fy+height,maxcols,maxrows,width,height,left,up );
-	printf("Axis cutout values->%d %d %d---\n",minx,maxy,maxx-minx);
-
-
-	cv:: Rect myRect(fx/2.0,fy/2.0,width/2.0,height/2.0);
-	cv:: Rect myRect1(minx/2.0,maxy/2.0 - 10,(maxx-minx)/2.0,20);
-	cv::Mat imagecropped=src1(myRect);
-	string name="graph_";
-	cv::Mat imagecroppedAxes=src1(myRect1);
-	string name1="graph_axes_";
-	name=name+to_string(countImages);
-	name1=name1+to_string(countImages);
-	imshow(name,imagecropped);
-	imshow(name1,imagecroppedAxes);
-	imwrite(name+".jpg",imagecropped);*/
 }
 
 void getImage(){
@@ -159,18 +122,6 @@ void getImage(){
 				int maxx=min(min(min(min(min(hLines[0][0],hLines[0][2]),vLines[1][0]),vLines[1][2]),vLines[0][0]),vLines[0][2]);
 				int maxy=max(max(max(max(max(hLines[0][1],hLines[0][3]),vLines[1][1]),vLines[1][3]),vLines[0][1]),vLines[0][3]);
 				cutout(minx,miny,maxx,maxy);
-				// cout << "lol value x and y" << ((double)minx-maxx)/10 << " " << ((double)miny-maxy)/10 << endl;
-
-				// int left = ((double)maxx-minx)/10;
-				// int up = ((double)maxy-miny)/10;
-
-				// cv:: Rect myRect(minx-left,miny-up,maxx-minx+(2*left),maxy-miny+(2*up));
-				// cv::Mat imagecropped=src(myRect);
-				// string name="test";
-				// name=name+to_string(countImages);
-				// imshow(name,imagecropped);
-				// imwrite(name+".jpg",imagecropped);
-				// countImages++;
 			}
 			else if(vLines.size()==1 && hLines.size()==2){
 				printf("here---\n");
@@ -191,15 +142,6 @@ void getImage(){
 				int maxx=min(min(min(min(min(hLines[0][0],hLines[0][2]),hLines[1][0]),hLines[1][2]),vLines[0][0]),vLines[0][2]);
 				int maxy=max(max(max(max(max(hLines[0][1],hLines[0][3]),hLines[1][1]),hLines[1][3]),vLines[0][1]),vLines[0][3]);
 				cutout(minx,miny,maxx,maxy);
-					
-				// cout << "value minx miny maxx maxy" << (double)lhorl[0]/10 << " " << (double)lhorl[1]/10 << " "  << (double)lhorl[2]/10 << " " << (double)lhorl[3]/10 << endl;
-				// cv::Rect myRect(lhorl[0]-50,lhorl[1]-50,max(max(lhorl[2],lhorl[0])-min(lhorl[2],lhorl[0]),max(uhorl[2],uhorl[0])-min(uhorl[2],uhorl[0]))+50,max(verl[1],verl[3])-min(verl[3],verl[1])+50);
-				// cv::Mat imagecropped=src(myRect);
-				// string name="test";
-				// name=name+to_string(countImages);
-				// imshow(name,imagecropped);
-				// imwrite(name+".jpg",imagecropped);
-				// countImages++;
 			}
 		}
 		else if(connectedLines.size()==4){
@@ -249,17 +191,6 @@ void getImage(){
 			int maxy=max(max(max(max(max(max(max(hLines[0][1],hLines[0][3]),hLines[1][1]),hLines[1][3]),vLines[0][1]),vLines[0][3]),vLines[1][1]),vLines[1][3]);
 			cutout(minx,miny,maxx,maxy);
 
-			// cout << "lol1 value x and y" << ((double)minx-maxx)/10 << " " << ((double)miny-maxy)/10 << endl;
-			// int left = ((double)maxx-minx)/50;
-			// int up = ((double)maxy-miny)/50;
-
-			// cv:: Rect myRect(minx-left,miny-up,maxx-minx+(2*left),maxy-miny+(2*up));
-			// cv::Mat imagecropped=src(myRect);
-			// string name="test";
-			// name=name+to_string(countImages);
-			// imshow(name,imagecropped);
-			// imwrite(name+".jpg",imagecropped);
-			// countImages++;
 		}
 		else if(connectedLines.size()>4){
 			printf("herer-->>>\n");
@@ -278,16 +209,6 @@ void getImage(){
 			}
 			//qwe
 			cutout(minx,miny,maxx,maxy);
-			/*cout << "lol2 value x and y" << ((double)minx-maxx)/10 << " " << ((double)miny-maxy)/10 << endl;
-			int left = ((double)maxx-minx)/100;
-			int up = ((double)maxy-miny)/100;
-
-			cv:: Rect myRect(minx,miny,maxx-minx,maxy-miny);
-			cv::Mat imagecropped=src(myRect);
-			string name="test";
-			name=name+to_string(countImages);
-			imshow(name,imagecropped);
-			imwrite(name+".jpg",imagecropped);*/
 			countImages++;
 		}
 	}
@@ -330,20 +251,7 @@ void union1(int x,int y){
 vector<Vec4i> lines;
 //mappingLineInt<Vec4i,int> mp1;
 vector<Vec4i> linesPerpendicular[100001];
-/*bool vectorcompare (pair<float,int> v,pair<float,int> w){
-	if(v.first < (w.first) )
-		return true; 
-	else if(v.first == w.first){
-		//if( (lines[v.second][0] < lines[w.second][0]) || (lines[v.second][1] < lines[w.second][1]))
-		if((lines[v.second][0] == lines[v.second][2] && lines[w.second][0] == lines[w.second][2] && lines[v.second][0] > lines[w.second][0])
-			|| (lines[v.second][1] == lines[v.second][3] && lines[w.second][1] == lines[w.second][3] && lines[v.second][1] < lines[w.second][1]) )
-			return true;
-		else
-			return false;
-	}
-	else
-		return false;
-}*/
+
 
 float dis(double x1,double y1,double x2,double y2){
 	return sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
@@ -543,50 +451,6 @@ void onTrackbar()
 			}
 		}
 	}
-
-
-
-
-	/*set<int> trash;
-	sort(intersection.begin(),intersection.end(),vectorcompare);
-	for(int i=0;i<intersection.size();i++){
-		Vec4i l = intersection[i].first;
-		Vec4i ll = intersection[i].second;
-		int mainlenver = lenLine(l);
-		int mainlenhor = lenLine(ll);
-		for(int j=0;j<intersection.size();j++){
-			if(i!=j){
-				Vec4i l1 = intersection[j].first;
-				Vec4i ll1 = intersection[j].first;
-				int templenver = lenLine(l1);
-				int templenhor = lenLine(ll1);
-				if(templenhor < (mainlenhor-590) && DoLineSegmentsIntersect(l[0],l[1],l[2],l[3],ll1[0],ll1[1],ll1[2],ll1[3]) ){
-					if(trash.find(j) == trash.end())
-						trash.insert(j);
-				}
-				if(templenver < (mainlenver-590) && DoLineSegmentsIntersect(ll[0],ll[1],ll[2],ll[3],l1[0],l1[1],l1[2],l1[3]) ){
-					if(trash.find(j) == trash.end())
-						trash.insert(j);
-				}
-			}
-		}
-	}
-	vector<pair<Vec4i,Vec4i> > removeTrashLines;
-	for(int i=0;i<intersection.size();i++){
-		if(trash.find(i) == trash.end())
-			removeTrashLines.push_back(intersection[i]);
-	}
-	intersection = removeTrashLines;
-
-	for(size_t i=0;i<intersection.size();i++){
-		Vec4i l1=intersection[i].first;
-		Vec4i l=intersection[i].second;
-		line( cdst, Point(l1[0], l1[1]), Point(l1[2], l1[3]), Scalar(0,0,255), 3, CV_AA);
-		line( cdst, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, CV_AA);		 	
-	}
-	imshow("detected lines",cdst);
-	 waitKey(0);
-	 exit(0);*/
 	
 
 	//trying to find the graph of connected lines and using them further
@@ -654,19 +518,6 @@ void onTrackbar()
 
 	printf("%d--->>>\n",count1);
 
-	// sort(intersection.begin(),intersection.end(),vectorcompare);
-	// set<int> filter;
-	// for(int i=0;i<intersection.size();i++){
-	// 	if(filter.find(i) == filter.end()){
-	// 		for(int j=i+1;j<intersection.size();j++){
-	// 			if(filter.find(j) == filter.end()){
-	// 				// code to check if inside the outer alreadyu sorted pair
-	// 			}
-	// 		}
-	// 	}
-	// }
-
-	//map<Vec4i,int> mappingLines;
 	minx=miny=INT_MAX;
 	maxx=maxy=-1;
 
@@ -685,20 +536,28 @@ void onTrackbar()
 	imshow("detected lines", cdst);
 	waitKey(0);
 	cout << "kk" << endl;
-	FILE *ftr=fopen("graph_0.txt","w");
-	fprintf(ftr,"%d\n",minx);
-	fprintf(ftr,"%d\n",miny);
-	fprintf(ftr,"%d\n",maxx);
-	fprintf(ftr,"%d\n",maxy);
+	char buf[1024];
+	graphName=graphName;
+	directoryName=directoryName+"/"+graphName;
+	strcpy(buf,directoryName.c_str());
+	FILE *ftr=fopen(buf,"w");
+	printf("path->%s\n",buf);
+	fprintf(ftr,"%d\n",minx/2);
+	fprintf(ftr,"%d\n",miny/2);
+	fprintf(ftr,"%d\n",maxx/2);
+	fprintf(ftr,"%d\n",maxy/2);
+	fclose(ftr);
 	alreadyFunced=true;
 }
 
 //iterate over all the files generated
-int main(){
+int main(int argc,char **argv){
 	vector<pair<float,int> > lv;
 
-	src= imread("graph_0.jpg");
-	src1 = imread("graph_0.jgp");
+	src= imread(argv[1]);
+	src1 = imread(argv[1]);
+	directoryName=argv[2];
+	graphName=argv[3];
 	cout << src.rows << " "  << src.cols;
 
 	resize(src, src, cvSize((src.cols)*2, (src.rows)*2));

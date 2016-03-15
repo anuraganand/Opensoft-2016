@@ -22,14 +22,16 @@ int main(int argc, char ** argv)
     FILE *f=fopen("graph_0.txt","r");
     fscanf(f,"%d %d %d %d",&minx,&miny,&maxx,&maxy);
 
-    cv:: Rect myRect(minx-10.0,maxy-30.0,(maxx-minx)+60.0,20);
+
+    //minx/2.0-10.0,maxy/2.0-30.0,(maxx-minx)/2.0+60.0,20
+    cv:: Rect myRect(minx/2.0-5.0,miny/2.0-10.0,20,(maxy-miny)/2.0+20.0);
     cv::Mat imagecropped=I(myRect);
     string name="graph_axes_0.jpg";
 
     I = imagecropped;
     imshow(name,I);
     waitKey(0);
-    imwrite("graph0_fftx.jpg",I);
+    imwrite("graph0_ffty.jpg",I);
 
     return 0;
 }

@@ -69,6 +69,7 @@ def gs_pdf_to_png(pdffilepath, resolution):
                   "-dNOPAUSE",
                   "-sOutputFile=../Images/Input/" + pdfname_without_ext + "%03d.png",
                   "-sDEVICE=png16m",
+                  "-dINTERPOLATE",
                   "-r%s" % resolution,
                   pdffilepath]
         print("Running command:\n%s" % ' '.join(arglist))
