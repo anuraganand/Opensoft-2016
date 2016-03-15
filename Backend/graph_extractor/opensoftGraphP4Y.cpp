@@ -22,7 +22,7 @@ vector<int> cordinates;
 int main(int argc, char ** argv)
 {
     Mat src;
-    Mat src1= imread("image_tick_tackX.jpg",0);
+    Mat src1= imread("image_tick_tackY.jpg",0);
     GaussianBlur(src1, src, Size(3,3), 1.0 );
     //cout << src.cols << " " << src.rows << endl;
     int i,j;
@@ -53,27 +53,35 @@ int main(int argc, char ** argv)
         }
     }
 
-    for(i=0;i<temp.cols;i++){
+    printf("%d %d\n", temp.rows,temp.cols);
+
+
+
+    for(i=0;i<temp.rows;i++){
         for(j=0;j<5;j++){
-            temp.at<uchar>(j,i)=0;
+            temp.at<uchar>(i,j)=0;
         }
     }
 
-    for(i=0;i<temp.cols;i++){
+    for(i=0;i<temp.rows;i++){
         for(j=0;j<5;j++){
-            temp.at<uchar>(temp.rows-1-j,i)=0;
+            temp.at<uchar>(i,temp.cols-1-j)=0;
         }
     }
 
-    for(i=0;i<temp.cols;i++){
+    /*for(i=0;i<temp.cols;i++){
         for(j=20;j<temp.rows;j++){
             temp.at<uchar>(j,i)=0;
         }
-    }
+    }*/
+
+
 
     for(map<int,int>::iterator it=mp1.begin();it!=mp1.end();it++){
         printf("%d...%d\n",(*it).first,(*it).second);
     }
+
+
 
     // for(i=0;i<src.cols;i++){
     //     for(j=0;j<min(src.cols-1-i+1,))
@@ -110,10 +118,8 @@ int main(int argc, char ** argv)
     for( int i = 0; i< contours.size(); i++ )
     {
         printf("herer\n");
-        printf("lol123123\n");
         //  Find the area of contour
         double a=contourArea( contours[i],false); 
-        printf("yolo\n");
         printf("%.6lf\n",a);
         if(a>largest_area){
             largest_area=a;
@@ -134,7 +140,7 @@ int main(int argc, char ** argv)
             string name="test";
             name=name+to_string(i);
             // imshow(name,imagecropped);
-            recCord.push_back(bounding_rect.x);
+            recCord.push_back(bounding_rect.y);
             //drawContours( src, contours,i, color, CV_FILLED,8,hierarchy);
             contours1.push_back(contours[i]);
             // namedWindow( "Display window", WINDOW_NORMAL );
@@ -144,9 +150,14 @@ int main(int argc, char ** argv)
         }  
         //drawContours( src, contours,i, color, CV_FILLED,8,hierarchy);
     }
-     sort(recCord.begin(),recCord.end());
-    char buf[1024];
+    sort(recCord.begin(),recCord.end());
+    // for(i=1;i<recCord.size();i++){
+    //     recCord[i] -= recCord[0];
+    //     cout << recCord[i] << endl;
+    // }
+    // recCord[0] = 0;
     string name=argv[1];
+    char buf[1024];
     strcpy(buf,name.c_str());
     FILE *f = fopen(buf,"w");
     fprintf(f, "%d\n", recCord.size());

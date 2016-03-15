@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include <queue>
+#include <fstream>
 #include <algorithm>
 
 using namespace std;
@@ -10,6 +11,9 @@ using namespace cv;
 
 const int HSV_THRESH = 15;
 RNG rng(12345);
+
+int MIN_X, MAX_X;
+int MIN_Y, MAX_Y;
 
 const int dx[] = {-1, -1, -1, 0, 0, +1, +1, +1};
 const int dy[] = {-1, 0, +1, -1, +1, -1, 0, +1};
@@ -33,7 +37,7 @@ void bfs(const Mat& img, vector < vector <int> >& visited, int x, int y, int hVa
         for (int k = 0; k < 8; ++k) {
             int nx = x + dx[k];
             int ny = y + dy[k];
-            if (nx >= 0 and nx < img.rows and ny >= 0 and ny < img.cols and visited[nx][ny] == -1) {
+            if (nx >= MIN_X and nx <= MAX_X and ny >= MIN_Y and ny <= MAX_Y and visited[nx][ny] == -1) {
                 Vec3b val = img.at<Vec3b>(nx, ny);
                 int h = val.val[0];
                 int s = val.val[1];
@@ -245,6 +249,30 @@ void fillGaps(Mat& img) {
     }
 }
 
+void filterImage(Mat& img, Mat& mask) {
+    long long satSum = 0;
+    int cnt = 0;
+    for (int x = 0; x < img.rows; ++x) {
+        for (int y = 0; y < img.cols; ++y) {
+            if (mask.at<uchar>(x, y) > 100) {
+                satSum += img.at<Vec3b>(x, y)[1];
+                ++cnt;
+            }
+        }
+    }
+
+    satSum /= cnt;
+
+    for (int x = 0; x < img.rows; ++x) {
+        for (int y = 0; y < img.cols; ++y) {
+            if (mask.at<uchar>(x, y) > 100) {
+                if (abs(satSum - img.at<Vec3b>(x, y)[1]) > 100)
+                    mask.at<uchar>(x, y) = 0;
+            }
+        }
+    }
+}
+
 void showContours(Mat& src_gray) {
     blur( src_gray, src_gray, Size(3,3) );
     static string str = "a";
@@ -286,19 +314,40 @@ void showContours(Mat& src_gray) {
     str[0]++;
 }
 
+int countWhitePixels(const Mat& img) {
+    int cnt = 0;
+    for (int x = 0; x < img.rows; ++x) {
+        for (int y = 0; y < img.cols; ++y) {
+            if (img.at<uchar>(x, y) > 100)
+                ++cnt;
+        }
+    }
+    return cnt;
+}
+
+typedef long long ll;
+
+struct HSVColor {
+    ll h, s, v;
+
+    HSVColor() : h(0), s(0), v(0) {}
+    HSVColor(ll h, ll s, ll v) : h(h), s(s), v(v) {}
+};
 
 void separateColors(Mat& img) {
     Mat dst;
+    namedWindow("Input Image BGR", WINDOW_NORMAL);
+    imshow("Input Image BGR", img);
     cvtColor(img, img, CV_BGR2HSV);
-    namedWindow("Input Image", WINDOW_NORMAL);
-    imshow("Input Image", img);
+    namedWindow("Input Image HSV", WINDOW_NORMAL);
+    imshow("Input Image HSV", img);
 
     // namedWindow("Output Image", WINDOW_NORMAL);
     // imshow("Output Image", dst);
 
     map <uchar, int> hueCount;
-    for (int x = 0; x < img.rows; ++x) {
-        for (int y = 0; y < img.cols; ++y) {
+    for (int x = MIN_X; x <= MAX_X; ++x) {
+        for (int y = MIN_Y; y <= MAX_Y; ++y) {
             Vec3b val = img.at<Vec3b>(x, y);
             int h = val.val[0];
             int s = val.val[1];
@@ -333,8 +382,8 @@ void separateColors(Mat& img) {
     int colorId = 0;
     map <int, int> idxMap;
 
-    for (int x = 0; x < img.rows; ++x) {
-        for (int y = 0; y < img.cols; ++y) {
+    for (int x = MIN_X; x <= MAX_X; ++x) {
+        for (int y = MIN_Y; y <= MAX_Y; ++y) {
             if (visited[x][y] != -1)
                 continue;
 
@@ -387,43 +436,78 @@ void separateColors(Mat& img) {
         separated[i] = Mat(img.rows, img.cols, CV_8UC1, Scalar(0));
     }
 
+    vector <HSVColor> colorSums(separated.size());
     vector <int> cnt(separated.size(), 0);
-    for (int x = 0; x < img.rows; ++x) {
-        for (int y = 0; y < img.cols; ++y) {
+
+    for (int x = MIN_X; x <= MAX_X; ++x) {
+        for (int y = MIN_Y; y <= MAX_Y; ++y) {
             if (visited[x][y] == -1)
                 continue;
             int id = eqClass[visited[x][y]];
             separated[id].at<uchar>(x, y) = 255;
             ++cnt[id];
+            Vec3b val = img.at<Vec3b>(x, y);
+            colorSums[id].h += val.val[0];
+            colorSums[id].s += val.val[1];
+            colorSums[id].v += val.val[2];
         }
     }
 
     const Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
-
+    ofstream os("colors.txt");
     for (int i = 0; i < separated.size(); ++i) {
         if (cnt[i] < 150)
             continue;
         string win(1, 'a' + i);
+
         erode(separated[i]);
         dilate(separated[i]);
         // morphologyEx(separated[i], separated[i], MORPH_OPEN, kernel, Point(-1,-1), 1);
         erode(separated[i]);
-        fillGaps(separated[i]);
-        
+        // fillGaps(separated[i]);
+
+        filterImage(img, separated[i]);
+
+        if (countWhitePixels(separated[i]) < 50)
+            continue;
+
         namedWindow(win, WINDOW_NORMAL);
         imshow(win, separated[i]);
+
         // showContours(separated[i]);
         imwrite(win + ".png", separated[i]);
+
+       
+        colorSums[i].h /= cnt[i];
+        colorSums[i].s /= cnt[i];
+        colorSums[i].v /= cnt[i];
+        os << colorSums[i].h << " " << colorSums[i].s << " " << colorSums[i].v << endl;
     }
+    os.close();
+}
+
+void loadBoundaries(const string& path) {
+    ifstream is(path);
+    is >> MIN_Y >> MIN_X >> MAX_Y >> MAX_X;
+    MIN_X += 5;
+    MIN_Y += 5;
+    MAX_X -= 5;
+    MAX_Y -= 5;
 }
 
 int main(int argc, char const *argv[]) {
-    if( argc != 2) {
-        cout <<"Provide image file." << endl;
+    if(argc != 3) {
+        cout <<"Provide image file and description file" << endl;
         return -1;
     }
 
     Mat image = imread(argv[1], CV_LOAD_IMAGE_COLOR);
+    loadBoundaries(argv[2]);
+    MIN_X = max(MIN_X, 0);
+    MAX_X = min(MAX_X, image.rows - 1);
+
+    MIN_Y = max(MIN_Y, 0);
+    MAX_Y = min(MAX_Y, image.cols - 1);
 
     if(!image.data) {
         cout <<  "Could not open or find the image" << std::endl ;
