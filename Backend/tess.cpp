@@ -22,15 +22,18 @@ bool perc(char *word)
         return true;
     return false;
 }
-int main()
+int main(int argc,char **argv)
 {
 //     135 56
 // 135 600
 // 1000 600
-    Mat img = imread("test2.png");
-
+    Mat img = imread(argv[1]);
+    FILE *f = fopen(argv[2],"r");
+    int minx,miny,maxx,maxy;
+    fscanf(f,"%d %d %d %d",&minx,&miny,&maxx,&maxy);
+    fclose(f);
     freopen("words.txt","w",stdout);
-   Pix *image = pixRead("test2.png");
+   Pix *image = pixRead(argv[1]);
 
   tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
   api->Init(NULL, "eng");
@@ -48,7 +51,7 @@ int main()
       ri->BoundingBox(level, &x1, &y1, &x2, &y2);
       char tmp[50];
       strcpy(tmp,word);
-      if(x1>430 && x2<1360 && y1>=300 && y2<=900 && perc(tmp) && conf>50)
+      if(x1>minx && x2<maxx && y1>=miny && y2<=maxy && perc(tmp) && conf>50)
       {
          printf("%s %d %d %d %d\n",
                word, x1, y1, x2, y2);
