@@ -533,8 +533,8 @@ void onTrackbar()
 			maxy=max(maxy,max(l1[1],l1[3]));
 			//break;
 	}
-	imshow("detected lines", cdst);
-	waitKey(0);
+	//imshow("detected lines", cdst);
+	//waitKey(0);
 	cout << "kk" << endl;
 	char buf[1024];
 	graphName=graphName;
@@ -565,11 +565,11 @@ int main(int argc,char **argv){
 	//circle(src,a,500,Scalar(255), 2, 8, 0);
  	Canny(src, dst, 50, 200, 3);
  	cvtColor(dst, cdst, CV_GRAY2BGR);
- 	namedWindow( "detected lines",  WINDOW_NORMAL);
+ 	//namedWindow( "detected lines",  WINDOW_NORMAL);
     /*createTrackbar( "Threshold1", "detected lines", &thresh, 1000, onTrackbar);
     createTrackbar( "Threshold2", "detected lines", &thresh1, 1000, onTrackbar1);
     onTrackbar(thresh,0);
     onTrackbar(thresh1,0);*/
     onTrackbar();
-    waitKey(0);
+    //waitKey(0);
 }
