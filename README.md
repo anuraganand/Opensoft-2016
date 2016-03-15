@@ -14,7 +14,7 @@ sudo python setup.py install
 
 ## Running pdf2png.py
 ```shell
-python pdf2png.py
+python pdf2png.py RESOLUTION filename.pdf
 ```
 The output images will be saved in Images/
 
