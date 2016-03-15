@@ -9,8 +9,11 @@ import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,17 +57,29 @@ public class home extends javax.swing.JFrame {
                     isfilepicked = 1;
                     File[] files = pickpdf.getSelectedFiles();
                     System.err.println("Number of files " + files.length);
+                    String fileList = "";
                     for (File file : files) {
+                        fileList = fileList.concat(file.getAbsolutePath() + " ");
                         System.err.println("File name " + file.getAbsolutePath());
-                        try {
-                            String cmd = "python ../Backend/pdf2png.py " + RESOLUTION + " " + file;
-                            Process p = Runtime.getRuntime().exec(cmd);
-                            p.waitFor();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        } catch (InterruptedException ex) {
-                            ex.printStackTrace();
+                    }
+                    System.err.println(fileList);
+                    try {
+                        String cmd = "python ../Backend/pdf2png.py " 
+                                + RESOLUTION + " " + fileList;
+                        System.err.println(cmd);
+                        Process p = Runtime.getRuntime().exec(cmd);
+                        BufferedReader in = new BufferedReader(
+                                new InputStreamReader(p.getErrorStream()) );
+                        String line;
+                        while ((line = in.readLine()) != null) {
+                            System.err.println(line);
                         }
+                        in.close();
+                        p.waitFor();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
                     }
                     filename.setText("Uploaded: " + pickpdf.getSelectedFile());
                     filename.setVisible(true);
@@ -130,10 +145,23 @@ public class home extends javax.swing.JFrame {
     }
     
     void loadPlots() {
-        String cmd = "../Backend/graph_extractor/opensoft";
+        String[] cmd = {"sh", "-c", 
+            "cd ../Backend/graph_extractor && ./opensoft"};
         try {
             Process p = Runtime.getRuntime().exec(cmd);
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(p.getErrorStream()) );
+            String line;
+            while ((line = in.readLine()) != null) {
+                System.err.println(line);
+            }
+            in.close();
+            System.err.println(Arrays.deepToString(cmd));
+            p.waitFor();
+            System.err.println("Plots loaded");
         } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
     }
