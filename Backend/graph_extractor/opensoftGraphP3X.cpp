@@ -15,8 +15,7 @@
 using namespace std;
 using namespace cv;
 
-int main(int argc, char ** argv)
-{
+int main(int argc, char ** argv){
     int minx,miny,maxy,maxx;
     Mat I = imread("graph_0.jpg", CV_LOAD_IMAGE_GRAYSCALE);
     FILE *f=fopen("graph_0.txt","r");
