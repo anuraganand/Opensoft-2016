@@ -22,7 +22,7 @@ vector<int> cordinates;
 int main(int argc, char ** argv)
 {
     Mat src;
-    Mat src1= imread("image_tick_tack.jpg",0);
+    Mat src1= imread("image_tick_tackX.jpg",0);
     GaussianBlur(src1, src, Size(3,3), 1.0 );
     //cout << src.cols << " " << src.rows << endl;
     int i,j;
@@ -81,7 +81,7 @@ int main(int argc, char ** argv)
 
     namedWindow( "meme",  WINDOW_NORMAL);
     imshow("meme",temp);
-    imwrite("contour_ticks.jpg",temp);
+    //imwrite("contour_ticks.jpg",temp);
 
 
     
