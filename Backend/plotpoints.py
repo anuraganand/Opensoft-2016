@@ -9,6 +9,11 @@ import glob
 
 noOfInterval = 15
 
+def find_nearest(array,value):
+	idx = (numpy.abs(array-value)).argmin()
+	idx1 = (numpy.abs(numpy.delete(array,idx)-value)).argmin()
+	return idx, idx1
+
 def plotpoints(file, filename):
 	filename = filename.split("_")[0]
 	im = numpy.asarray(Image.open(file))
@@ -49,27 +54,41 @@ def plotpoints(file, filename):
 
 	""" TAKING OUT ONLY 15 POINTS CORRESPONDING TO THE X-AXIS """
 	minX = pt1[0][0]
-	maxX = pt1[pt1.size-1][0]
+	maxX = pt1[len(pt1)-1][0]
 	difference = maxX - minX
 	interval = difference/noOfInterval
 	counter = 0
 	newPt = []
-	for i in xrange(pt1.size()):
-		# if interval*counter - difference/maxX <= i <= interval*counter + difference/maxX:
-			# newPt.append(pt1[i])
-			# counter = counter + 1
-		if (i%interval == 0)
-			newPt.append(pt1[i])
-			counter = counter + 1
-			if (counter == 15):
-				break
+	pt1 = numpy.asarray(pt1)
+	# print pt1
+	for i in xrange(0,16):
+		val = minX + (interval * i)
+		closest, closest1 = (find_nearest(pt1[:,0], val))
+		avg = (pt1[closest][1] + pt1[closest1][1])/2.0
+		val = "%.2f" % round(val,2)
+		avg = "%.2f" % round(avg,2)
+		newPt.append([val, avg])
 
 	with open(filename + '_plot.txt', 'a') as outfile:
-		outfile.write('\n')
 		for point in newPt:
-			outfile.write('{0:.2f} {1:.2f}\n'.format(point[0],point[1]))
+			point = str(point)
+			# print point
+			point = point.strip('[')
+			point = point.strip(']')
+			point = point.strip("'")
+			point = point.replace("', '"," ")
+			outfile.write(point)
+			outfile.write("\n")
 		outfile.write('<>\n')
 
+pngCounter = len(glob.glob1(os.getcwd(),"*.png"))
+for file in glob.glob("*.png"):
+	filename = str(file)
+	filename = os.path.splitext(filename)[0]
+	filename = filename.split("_")[0]
+	with open(filename + '_plot.txt', 'a') as outfile:
+		outfile.write(str(pngCounter) + '\n')
+	break
 for file in glob.glob("*.png"):
     print(file)
     filename = str(file)
