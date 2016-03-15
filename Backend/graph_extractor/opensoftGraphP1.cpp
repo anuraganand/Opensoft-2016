@@ -7,9 +7,14 @@
 #include "opencv2/nonfree/nonfree.hpp"
 #include "opencv2/calib3d/calib3d.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 using namespace cv;
 using namespace std;
+
+struct stat st = {0};
 
 typedef struct node2{
 	pair<int,int> lt;
@@ -26,6 +31,7 @@ int ffg[100000];
 int parent[100001];
 int childL[100001];
 int visitedDFS[100001];
+char dirname[50];
 vector<int> connectedLines;
 vector<int> linesNeighbour[100001];
 map<int,pair<pair<pair<int,int>,int>,int> > mappedLines;
@@ -602,14 +608,37 @@ void onTrackbar()
 			cv:: Rect myRect(rectangles[i].lt.first,rectangles[i].lt.second,rectangles[i].rt.first-rectangles[i].lt.first,rectangles[i].rb.second-rectangles[i].rt.second);
 			//cv:: Rect myRect1(minx/2.0,maxy/2.0 - 10,(maxx-minx)/2.0,20);
 			cv::Mat imagecropped=src1(myRect);
-			string name="graph_";
+			
+			string delimiter = ".";
+		    char data[5][1000];
+		    int pos=0;
+		    string token;
+		    string total(dirname);
+		    int no=0;
+		    while ((pos = total.find(delimiter)) != std::string::npos)
+		    {
+		        token = total.substr(0, pos);
+		        strcpy(data[no++],token.c_str());
+		        total.erase(0, pos + delimiter.length());
+		    }
+		    strcpy(data[no++],total.c_str());
+
+		    strcpy(dirname,data[0]);
+
+		    string dirnameused(dirname);
+			string name= dirnameused + "/graph_";
 			//cv::Mat imagecroppedAxes=src1(myRect1);
 			//string name1="graph_axes_";
 			name=name+to_string(countImages);
 			countImages++;
 			//name1=name1+to_string(countImages);
 			imshow(name,imagecropped);
+
 			//imshow(name1,imagecroppedAxes);
+			if (stat(dirname, &st) == -1) {
+			    mkdir(dirname, 0777);
+			}
+			cout << "file name---->>>> %s\n" + name+".jpg" << endl;
 			imwrite(name+".jpg",imagecropped);
 		}
 	}
@@ -634,7 +663,7 @@ void onTrackbar()
 
 int main(int argc,char **argv){
 	vector<pair<float,int> > lv;
-
+	strcpy(dirname,argv[2]);
 	src= imread(argv[1]);
 	src1 = imread(argv[1]);
 	cout << src.rows << " "  << src.cols;
