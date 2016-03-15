@@ -106,7 +106,8 @@ void cutout(int minx,int miny,int maxx,int maxy){
 	printf("cutout vals -> %d %d %d %d %d %d %d %d\n",fx+width,fy+height,maxcols,maxrows,width,height,left,up );
 	printf("Axis cutout values->%d %d %d---\n",minx,maxy,maxx-minx);
 
-	insertIntoRectangle(fx/2.0,fy/2.0,width/2.0,height/2.0);
+	//insertIntoRectangle(fx/2.0,fy/2.0,width/2.0,height/2.0);
+	insertIntoRectangle(fx,fy,width,height);
 	/*cv:: Rect myRect(fx/2.0,fy/2.0,width/2.0,height/2.0);
 	cv:: Rect myRect1(minx/2.0,maxy/2.0 - 10,(maxx-minx)/2.0,20);
 	cv::Mat imagecropped=src1(myRect);
@@ -482,7 +483,7 @@ void onTrackbar()
 		for(size_t j=0;j<lines.size();j++){
 			if(i!=j){
 				Vec4i l1=lines[j];
-				int thres11=500;
+				int thres11=150;
 				if(abs(l[0]-l[2])<=10 && abs(l1[0]-l1[2])<=10){
 					int dist1=abs(l[0]-l1[0]);
 					int length1=abs(l[1]-l[3]);
@@ -655,8 +656,8 @@ void onTrackbar()
 			line( cdst, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, CV_AA);
 			//break;
 	}
-	//imshow("detected lines", cdst);
-	//waitKey(0);
+	imshow("detected lines", cdst);
+	waitKey(0);
 	cout << "kk" << endl;
 	alreadyFunced=true;
 }
@@ -668,12 +669,12 @@ int main(int argc,char **argv){
 	src1 = imread(argv[1]);
 	cout << src.rows << " "  << src.cols;
 
-	resize(src, src, cvSize((src.cols)*2, (src.rows)*2));
+	resize(src, src, cvSize((src.cols), (src.rows)));
 	Point2f a(0,0);
 	//circle(src,a,500,Scalar(255), 2, 8, 0);
  	Canny(src, dst, 50, 200, 3);
  	cvtColor(dst, cdst, CV_GRAY2BGR);
- 	//namedWindow( "detected lines",  WINDOW_NORMAL);
+ 	namedWindow( "detected lines",  WINDOW_NORMAL);
     onTrackbar();
     //waitKey(0);
 }

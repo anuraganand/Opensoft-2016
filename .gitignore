@@ -24,3 +24,10 @@
 
 # ignore text files
 *.txt
+
+# ignore binary files in graph_extractor
+Backend/graph_extractor/opensoft
+Backend/graph_extractor/opensoft1
+Backend/graph_extractor/opensoft2
+
+Backend/test*/

@@ -87,8 +87,8 @@ int main(int argc, char ** argv)
     //     for(j=0;j<min(src.cols-1-i+1,))
     // }
 
-    namedWindow( "meme",  WINDOW_NORMAL);
-    imshow("meme",temp);
+    // namedWindow( "meme",  WINDOW_NORMAL);
+    // imshow("meme",temp);
     //imwrite("contour_ticks.jpg",temp);
 
 
@@ -128,7 +128,7 @@ int main(int argc, char ** argv)
             // Find the bounding rectangle for biggest contour
             bounding_rect=boundingRect(contours[i]);
         }
-        if(a > 5.0 && a<1000.0){
+        if(a > 50.0 && a<1000.0){
             printf("lol\n");
             bounding_rect=boundingRect(contours[i]);
             int left = (double)bounding_rect.width/5000;
@@ -139,13 +139,13 @@ int main(int argc, char ** argv)
             cv::Mat imagecropped=src(myRect);
             string name="test";
             name=name+to_string(i);
-            imshow(name,imagecropped);
-            recCord.push_back(bounding_rect.x);
+            // imshow(name,imagecropped);
+            recCord.push_back(bounding_rect.y);
             //drawContours( src, contours,i, color, CV_FILLED,8,hierarchy);
             contours1.push_back(contours[i]);
-            namedWindow( "Display window", WINDOW_NORMAL );
-            imshow( "Display window", src );    
-            waitKey(0);
+            // namedWindow( "Display window", WINDOW_NORMAL );
+            // imshow( "Display window", src );    
+            // waitKey(0);
 
         }  
         //drawContours( src, contours,i, color, CV_FILLED,8,hierarchy);
@@ -156,12 +156,15 @@ int main(int argc, char ** argv)
     //     cout << recCord[i] << endl;
     // }
     // recCord[0] = 0;
-    FILE *f = fopen("yticks.txt","w");
+    string name=argv[1];
+    char buf[1024];
+    strcpy(buf,name.c_str());
+    FILE *f = fopen(buf,"w");
     fprintf(f, "%d\n", recCord.size());
     for(i=0;i<recCord.size();i++){
-        fprintf(f, "%d\n", recCord[i]);
+        fprintf(f, "%d\n", recCord[i]-recCord[0]);
     }
 
-    waitKey(0);
+    // waitKey(0);
     return 0;
 }

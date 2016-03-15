@@ -17,9 +17,15 @@ using namespace cv;
 
 int main(int argc, char ** argv)
 {
+    string nameGraph=argv[1];
+    string nameData=argv[2];
+    char buf[1024];
+    strcpy(buf,nameGraph.c_str());
     int minx,miny,maxy,maxx;
-    Mat I = imread("graph_0.jpg", CV_LOAD_IMAGE_GRAYSCALE);
-    FILE *f=fopen("graph_0.txt","r");
+    Mat I = imread(buf, CV_LOAD_IMAGE_GRAYSCALE);
+    memset(buf,'\0',1024);
+    strcpy(buf,nameData.c_str());
+    FILE *f=fopen(buf,"r");
     fscanf(f,"%d %d %d %d",&minx,&miny,&maxx,&maxy);
 
 
@@ -29,8 +35,8 @@ int main(int argc, char ** argv)
     string name="graph_axes_0.jpg";
 
     I = imagecropped;
-    imshow(name,I);
-    waitKey(0);
+    //imshow(name,I);
+    //waitKey(0);
     imwrite("graph0_ffty.jpg",I);
 
     return 0;

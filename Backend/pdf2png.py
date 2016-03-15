@@ -67,7 +67,7 @@ def gs_pdf_to_png(pdffilepath, resolution):
         arglist = [GHOSTSCRIPTCMD,
                   "-dBATCH",
                   "-dNOPAUSE",
-                  "-sOutputFile=../Images/Input/" + pdfname_without_ext + "%03d.png",
+                  "-sOutputFile=../Images/Input/test_%03d.png",
                   "-sDEVICE=png16m",
                   "-dINTERPOLATE",
                   "-r%s" % resolution,

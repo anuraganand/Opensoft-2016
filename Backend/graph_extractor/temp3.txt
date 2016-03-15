@@ -1,2 +1,0 @@
-graph_0.png
-graph_1.png

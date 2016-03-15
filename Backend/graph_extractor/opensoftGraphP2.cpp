@@ -542,10 +542,10 @@ void onTrackbar()
 	strcpy(buf,directoryName.c_str());
 	FILE *ftr=fopen(buf,"w");
 	printf("path->%s\n",buf);
-	fprintf(ftr,"%d\n",minx/2);
-	fprintf(ftr,"%d\n",miny/2);
-	fprintf(ftr,"%d\n",maxx/2);
-	fprintf(ftr,"%d\n",maxy/2);
+	fprintf(ftr,"%d\n",minx);
+	fprintf(ftr,"%d\n",miny);
+	fprintf(ftr,"%d\n",maxx);
+	fprintf(ftr,"%d\n",maxy);
 	fclose(ftr);
 	alreadyFunced=true;
 }
@@ -560,7 +560,7 @@ int main(int argc,char **argv){
 	graphName=argv[3];
 	cout << src.rows << " "  << src.cols;
 
-	resize(src, src, cvSize((src.cols)*2, (src.rows)*2));
+	resize(src, src, cvSize((src.cols), (src.rows)));
 	Point2f a(0,0);
 	//circle(src,a,500,Scalar(255), 2, 8, 0);
  	Canny(src, dst, 50, 200, 3);
