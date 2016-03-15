@@ -1,2 +1,2 @@
-graph_0.txt
-graph_1.txt
+graph_0.png
+graph_1.png

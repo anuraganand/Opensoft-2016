@@ -639,7 +639,7 @@ void onTrackbar()
 			    mkdir(dirname, 0777);
 			}
 			cout << "file name---->>>> %s\n" + name+".jpg" << endl;
-			imwrite(name+".jpg",imagecropped);
+			imwrite(name+".png",imagecropped);
 		}
 	}
 	//end of code
