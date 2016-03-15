@@ -22,7 +22,7 @@ vector<int> cordinates;
 int main(int argc, char ** argv)
 {
     Mat src;
-    Mat src1= imread("image_tick_tack.jpg",0);
+    Mat src1= imread("image_tick_tackY.jpg",0);
     GaussianBlur(src1, src, Size(3,3), 1.0 );
     //cout << src.cols << " " << src.rows << endl;
     int i,j;
@@ -53,27 +53,35 @@ int main(int argc, char ** argv)
         }
     }
 
-    for(i=0;i<temp.cols;i++){
+    printf("%d %d\n", temp.rows,temp.cols);
+
+
+
+    for(i=0;i<temp.rows;i++){
         for(j=0;j<5;j++){
-            temp.at<uchar>(j,i)=0;
+            temp.at<uchar>(i,j)=0;
         }
     }
 
-    for(i=0;i<temp.cols;i++){
+    for(i=0;i<temp.rows;i++){
         for(j=0;j<5;j++){
-            temp.at<uchar>(temp.rows-1-j,i)=0;
+            temp.at<uchar>(i,temp.cols-1-j)=0;
         }
     }
 
-    for(i=0;i<temp.cols;i++){
+    /*for(i=0;i<temp.cols;i++){
         for(j=20;j<temp.rows;j++){
             temp.at<uchar>(j,i)=0;
         }
-    }
+    }*/
+
+
 
     for(map<int,int>::iterator it=mp1.begin();it!=mp1.end();it++){
         printf("%d...%d\n",(*it).first,(*it).second);
     }
+
+
 
     // for(i=0;i<src.cols;i++){
     //     for(j=0;j<min(src.cols-1-i+1,))
@@ -81,7 +89,7 @@ int main(int argc, char ** argv)
 
     namedWindow( "meme",  WINDOW_NORMAL);
     imshow("meme",temp);
-    imwrite("contour_ticks.jpg",temp);
+    //imwrite("contour_ticks.jpg",temp);
 
 
     
@@ -142,13 +150,13 @@ int main(int argc, char ** argv)
         }  
         //drawContours( src, contours,i, color, CV_FILLED,8,hierarchy);
     }
-     sort(recCord.begin(),recCord.end());
+    sort(recCord.begin(),recCord.end());
     // for(i=1;i<recCord.size();i++){
     //     recCord[i] -= recCord[0];
     //     cout << recCord[i] << endl;
     // }
     // recCord[0] = 0;
-    FILE *f = fopen("xticks.txt","w");
+    FILE *f = fopen("yticks.txt","w");
     fprintf(f, "%d\n", recCord.size());
     for(i=0;i<recCord.size();i++){
         fprintf(f, "%d\n", recCord[i]);
