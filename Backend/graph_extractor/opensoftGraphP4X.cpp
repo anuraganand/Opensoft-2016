@@ -142,17 +142,17 @@ int main(int argc, char ** argv)
         }  
         //drawContours( src, contours,i, color, CV_FILLED,8,hierarchy);
     }
-    // sort(recCord.begin(),recCord.end());
+     sort(recCord.begin(),recCord.end());
     // for(i=1;i<recCord.size();i++){
     //     recCord[i] -= recCord[0];
     //     cout << recCord[i] << endl;
     // }
     // recCord[0] = 0;
-    // FILE *f = fopen("xticks.txt","w");
-    // fprintf(f, "%d\n", recCord.size());
-    // for(i=0;i<recCord.size();i++){
-    //     fprintf(f, "%d\n", recCord[i]);
-    // }
+    FILE *f = fopen("xticks.txt","w");
+    fprintf(f, "%d\n", recCord.size());
+    for(i=0;i<recCord.size();i++){
+        fprintf(f, "%d\n", recCord[i]-recCord[0]);
+    }
 
     waitKey(0);
     return 0;
