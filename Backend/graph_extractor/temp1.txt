@@ -1,6 +1,5 @@
-graph_0.jpg
+a.out
 graph_0.txt
-graph_1.jpg
 graphMaster.cpp
 opensoft
 opensoft1
@@ -13,10 +12,11 @@ opensoftGraphP3X.cpp
 opensoftGraphP3Y.cpp
 opensoftGraphP4X.cpp
 opensoftGraphP4Y.cpp
+PS002
+PS003
+PS005
 temp1.txt
 temp3.txt
 temp.txt
-test_p2t001
-test_p2t002
 xticks.txt
 yticks.txt

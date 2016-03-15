@@ -24,10 +24,12 @@ int main(){
 		fileName.push_back(temp);
 	}
 
+	// system("g++ -std=c++11 -ggdb `pkg-config --cflags opencv` -o opensoft1 opensoftGraphP1.cpp `pkg-config --libs opencv`");
+	// system("g++ -std=c++11 -ggdb `pkg-config --cflags opencv` -o opensoft2 opensoftGraphP2.cpp `pkg-config --libs opencv`");
+	
 	for(int i=0;i<fileName.size();i++){
 
 		//finished calling the first part of commands
-		system("g++ -std=c++11 -ggdb `pkg-config --cflags opencv` -o opensoft1 opensoftGraphP1.cpp `pkg-config --libs opencv`");
 		string command="./opensoft1 ../../Images/Input/"+fileName[i]+" "+fileName[i];
 		char buf[1024];
 		strcpy(buf,command.c_str());
@@ -47,7 +49,6 @@ int main(){
 
 	for(int i=0;i<fileName.size();i++){
 		if(fileName[i][0]=='t' && fileName[i][1]=='e' && fileName[i][2]=='s' && fileName[i][3]=='t' && fileName[i][4]=='_'){
-			system("g++ -std=c++11 -ggdb `pkg-config --cflags opencv` -o opensoft2 opensoftGraphP2.cpp `pkg-config --libs opencv`");
 			string command="ls "+fileName[i]+"> temp3.txt";
 			char buf[1024];
 			strcpy(buf,command.c_str());
