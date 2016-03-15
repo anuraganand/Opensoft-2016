@@ -686,10 +686,10 @@ void onTrackbar()
 	waitKey(0);
 	cout << "kk" << endl;
 	FILE *ftr=fopen("graph_0.txt","w");
-	fprintf(ftr,"%d\n",minx);
-	fprintf(ftr,"%d\n",miny);
-	fprintf(ftr,"%d\n",maxx);
-	fprintf(ftr,"%d\n",maxy);
+	fprintf(ftr,"%d\n",minx/2);
+	fprintf(ftr,"%d\n",miny/2);
+	fprintf(ftr,"%d\n",maxx/2);
+	fprintf(ftr,"%d\n",maxy/2);
 	alreadyFunced=true;
 }
 
