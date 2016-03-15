@@ -143,7 +143,10 @@ int main(int argc, char ** argv)
         //drawContours( src, contours,i, color, CV_FILLED,8,hierarchy);
     }
      sort(recCord.begin(),recCord.end());
-    FILE *f = fopen("xticks.txt","w");
+    char buf[1024];
+    string name=argv[1];
+    strcpy(buf,name.c_str());
+    FILE *f = fopen(buf,"w");
     fprintf(f, "%d\n", recCord.size());
     for(i=0;i<recCord.size();i++){
         fprintf(f, "%d\n", recCord[i]-recCord[0]);
