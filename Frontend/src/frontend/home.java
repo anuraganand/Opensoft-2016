@@ -100,11 +100,10 @@ public class home extends javax.swing.JFrame {
         {  
             public void mouseClicked(MouseEvent e)  
             {
-                if (isfilepicked!=0)
+                if (isfilepicked !=0)
                 {
                     loadergif.setVisible(true);
-                    
-                    
+                    loadPlots();
                 } 
                 else {
                     filename.setText("Pick a file first!");
@@ -129,7 +128,15 @@ public class home extends javax.swing.JFrame {
             }  
         });
     }
-
+    
+    void loadPlots() {
+        String cmd = "../Backend/graph_extractor/opensoft";
+        try {
+            Process p = Runtime.getRuntime().exec(cmd);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
