@@ -127,7 +127,7 @@ void getImage(){
 	printf("\n\n");
 	printf("size--->%d\n",connectedLines.size());
 
-	if(connectedLines.size()==2){
+	if(connectedLines.size()>=2){
 		//if dosent work delete this section and return
 		printf("herer-->>>\n");
 		int minx=INT_MAX;
@@ -148,7 +148,7 @@ void getImage(){
 
 		//countImages++;
 	}
-	else{
+	else if(false){
 		Vec4i l0;
 		Vec4i l1;
 		Vec4i l2;
@@ -632,7 +632,7 @@ void onTrackbar()
 			name=name+to_string(countImages);
 			countImages++;
 			//name1=name1+to_string(countImages);
-			imshow(name,imagecropped);
+			//imshow(name,imagecropped);
 
 			//imshow(name1,imagecroppedAxes);
 			if (stat(dirname, &st) == -1) {
@@ -655,8 +655,8 @@ void onTrackbar()
 			line( cdst, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, CV_AA);
 			//break;
 	}
-	imshow("detected lines", cdst);
-	waitKey(0);
+	//imshow("detected lines", cdst);
+	//waitKey(0);
 	cout << "kk" << endl;
 	alreadyFunced=true;
 }
@@ -673,7 +673,7 @@ int main(int argc,char **argv){
 	//circle(src,a,500,Scalar(255), 2, 8, 0);
  	Canny(src, dst, 50, 200, 3);
  	cvtColor(dst, cdst, CV_GRAY2BGR);
- 	namedWindow( "detected lines",  WINDOW_NORMAL);
+ 	//namedWindow( "detected lines",  WINDOW_NORMAL);
     onTrackbar();
-    waitKey(0);
+    //waitKey(0);
 }
