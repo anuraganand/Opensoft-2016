@@ -32,8 +32,8 @@ int main(int argc, char ** argv){
     string name="graph_axes_0.jpg";
 
     I = imagecropped;
-    imshow(name,I);
-    waitKey(0);
+    //imshow(name,I);
+    //waitKey(0);
     imwrite("graph0_fftx.jpg",I);
 
     return 0;
