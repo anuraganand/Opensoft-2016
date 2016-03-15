@@ -21,3 +21,6 @@
 
 # ignore properties files
 *.properties
+
+# ignore text files
+*.txt
