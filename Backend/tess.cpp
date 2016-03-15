@@ -28,6 +28,8 @@ int main(int argc,char **argv)
 // 135 600
 // 1000 600
     Mat img = imread(argv[1]);
+    Mat gray;
+    cvtColor(img,gray, CV_BGR2GRAY);
     FILE *f = fopen(argv[2],"r");
     int minx,miny,maxx,maxy;
     fscanf(f,"%d %d %d %d",&minx,&miny,&maxx,&maxy);
@@ -53,8 +55,17 @@ int main(int argc,char **argv)
       strcpy(tmp,word);
       if(x1>minx && x2<maxx && y1>=miny && y2<=maxy && perc(tmp) && conf>50)
       {
-         printf("%s %d %d %d %d\n",
-               word, x1, y1, x2, y2);
+        int area = (x2-x1)*(y2-y1);
+         int no=0;
+         for(int i=x1;i<=x2;i++)
+          for(int j=y1;j<=y2;j++)
+            if(gray.at<uchar>(j,i)<200)
+              no++;
+        if(1.0*no/area<0.3 || 1.0*no/area>.8)
+          continue;
+        if((x2-x1)<=8 || (y2-y1)<=8)
+          continue;
+         printf("%s %d %d %d %d\n",word, x1, y1, x2, y2);
          rectangle(img,cvRect(x1,y1,x2-x1,y2-y1),CV_RGB(255,0,0));
       }
       delete[] word;
