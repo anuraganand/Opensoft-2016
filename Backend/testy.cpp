@@ -59,11 +59,11 @@ vector<pii> values;
 vector<pair<pii,int> > diff;
 // vector<int> values;
 int count1[1001];
+map<int,int> mp1;
 
 int main(){
-	FILE *ftr=fopen("axisvaly.txt","r");
+	FILE *ftr=fopen("axisvalsy.txt","r");
 	char c[1001];
-	debug;
 	fscanf(ftr,"%s",c);
 	int temp;
 	int i=0;
@@ -79,13 +79,16 @@ int main(){
 			i=1-i;
 		}
 	}
-	debug;
 
 	sort(all(values));
 
+	rep(t1,values){
+		cout<<t1.x<<" "<<t1.y<<"\n";
+	}
+
 	For(i,0,values.size()-1){
 		int temp=abs(values[i].y-values[i+1].y);
-		count1[temp]++;
+		mp1[temp]++;
 	}
 
 	int max1=-1;
@@ -93,17 +96,10 @@ int main(){
 	int sum1=0;
 	int count=0;
 
-	For(i,0,1001){
-		if(count1[i]>max1){
-			max1=count1[i];
-			pos1=i;
-		}
-	}
-
-	For(i,0,values.size()-1){
-		if(abs(values[i].y-values[i+1].y)==pos1){
-			sum1+=abs(values[i].x-values[i+1].x);
-			count++;
+	rep(t1,mp1){
+		if(t1.y>max1){
+			max1=t1.y;
+			pos1=t1.x;
 		}
 	}
 
@@ -111,41 +107,31 @@ int main(){
 	max1=-1;
 	debug;
 
-	For(i,0,values.size()){
-		vi temp;
-		For(j,0,values.size()){
-			if(j<i){
-				temp.pb(values[i].y+(i-j)*pos1);
-			}
-			else{
-				temp.pb(values[i].y+(i-j)*pos1);
-			}
-		}
-
-		//temp.pb(values[i].y+(values.size()-i)*pos1);
-
-		int count2=0;
-		For(j,0,values.size()){
-			if(temp[j]==values[j].y){
-				count2++;
-			}
-		}
-		if(count2>max1){
-			max1=count2;
-			answer1=temp;
-		}
-	}
-
-	debug;
-
 	vector<pair<double,double> > function;
 	vector<double> lol;
+	set<pair<int,int> > s1;
+	int width1=0;
+	int widthcount=0;
 
-	For(j,0,values.size()){
-		if(answer1[j]==values[j].y){
-			function.pb(mp(values[j].x,values[j].y));
+	For(j,0,values.size()-1){
+		if(abs(values[j].y-values[j+1].y)==pos1){
+			width1+=abs(values[j].x-values[j+1].x);
+			widthcount++;
+			if(s1.find(values[j])==s1.end()){
+				s1.insert(values[j]);
+				function.pb(mp(values[j].x,values[j].y));
+			}
+			if(s1.find(values[j+1])==s1.end()){
+				s1.insert(values[j+1]);
+				function.pb(mp(values[j+1].x,values[j+1].y));
+			}
 		}
 	}
+
+	rep(t1,values){
+		cout<<width1<<" "<<widthcount<<" "<<t1.x<<"-->>"<<t1.y<<"\n";
+	}
+	double pivot=(double)width1/(double)widthcount;
 	double temp2=0;
 	int k=i;
 	double min1=0;
@@ -196,7 +182,7 @@ int main(){
 				continue;
 			}
 			else{
-				temp2=temp2*(values[values.size()-1].x-pos1-function[j].x)/(function[k].x-function[j].x);
+				temp2=temp2*(values[values.size()-1].x+pivot-function[j].x)/(function[k].x-function[j].x);
 			}
 		}
 		lol.pb(temp2*function[i].y);
@@ -205,7 +191,14 @@ int main(){
 		max12+=t1;
 	}
 
-	FILE* p = fopen("axisvaly.txt","w");
+	rep(t1,function){
+		cout<<t1.x<<" "<<t1.y<<"\n";
+	}
+
+	cout<<values[values.size()-1].x<<" "<<pivot<<" "<<values[0].x<<" "<<pos1<<"\n";
+	cout<<min1<<" "<<max11<<" "<<max12<<" "<<pivot<<"\n";
+
+	FILE* p = fopen("axisvalsy.txt","w");
 	fprintf(p, "%.2lf\n%.2lf\n%.2lf",min1,max11,max12);
 	fclose(p);
 
