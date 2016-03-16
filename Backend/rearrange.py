@@ -3,6 +3,7 @@ import numpy as np
 
 def rearr(file):
 	f = open(file,"r")
+	print(str(file))
 	noOfGraphs = int(f.readline())
 	# print noOfGraphs
 
@@ -60,7 +61,7 @@ def rearr(file):
 	output.close()
 
 def main():
-	for file in glob.glob("*.txt"):
+	for file in glob.glob("*_plot.txt"):
 	    rearr(file)
 
 if __name__ == '__main__':
