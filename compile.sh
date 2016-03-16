@@ -12,6 +12,7 @@ sh compile.sh match_legends.cc match_legend
 g++ testx.cpp -std=c++11 -o testx
 g++ testy.cpp -std=c++11 -o testy
 
+
 cd scaledetection
 g++ -g recognize.cpp -llept -ltesseract
 cd ..
