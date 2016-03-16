@@ -133,16 +133,16 @@ int main(int argc, char ** argv)
             cv::Mat imagecropped=src(myRect);
             string name="test";
             name=name+to_string(i);
-            // imshow(name,imagecropped);
+             // imshow(name,imagecropped);
             recCord.push_back(bounding_rect.x);
-            //drawContours( src, contours,i, color, CV_FILLED,8,hierarchy);
+            drawContours( src, contours,i, color, CV_FILLED,8,hierarchy);
             contours1.push_back(contours[i]);
-            // namedWindow( "Display window", WINDOW_NORMAL );
-            // imshow( "Display window", src );    
-            // waitKey(0);
+             namedWindow( "Display window", WINDOW_NORMAL );
+             // imshow( "Display window", src );    
+             // waitKey(0);
 
         }  
-        //drawContours( src, contours,i, color, CV_FILLED,8,hierarchy);
+        drawContours( src, contours,i, color, CV_FILLED,8,hierarchy);
     }
      sort(recCord.begin(),recCord.end());
     char buf[1024];
