@@ -120,7 +120,7 @@ public class home extends javax.swing.JFrame {
                     loadergif.setVisible(true);
 //                    loadPlots();
                     loadLegends();
-                    separateColors();
+                    generateOutput();
                 } 
                 else {
                     filename.setText("Pick a file first!");
@@ -229,9 +229,7 @@ public class home extends javax.swing.JFrame {
         System.err.println("Legends added");
     }
     
-    void separateColors() {
-        
-    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
