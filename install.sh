@@ -39,7 +39,7 @@ cd ..
 cd pyfpdf
 sudo python setup.py install
 
-
+sudo apt-get install python-numpy
 
 #Installing Matplotlib and building it.
 sudo apt-get install python-matplotlib -y
