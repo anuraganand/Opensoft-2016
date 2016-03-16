@@ -17,7 +17,10 @@ left_mostx = 0
 right_mostx = 577
 top_mostx = y_origin
 bottom_mostx = 0
-
+left_mostx_top = 0
+right_mostx_top = 0
+top_mostx_top = y_origin
+bottom_mostx_top = 0
 
 input_points = open(sys.argv[2],"r")
 ct=0
@@ -112,7 +115,27 @@ for cnt in contours:
           # print h
           # fx.write(str(x)+" "+str(y)+" "+str(x+w)+" "+str(y+h)+"\n")
 
-   
+    if y < y_top :
+      if (y+h) < y_top :
+          x = x - extendr
+          y = y - extendc
+          w = w + 2 * extendr
+          h = h + 2 * extendc
+          cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),1)
+          cv2.rectangle(thresh_color,(x,y),(x+w,y+h),(0,255,0),1)
+          if left_mostx_top > x :
+            left_mostx_top = x
+          if top_mostx_top > y :  
+            top_mostx_top = y
+          if bottom_mostx_top < (y+h) :
+            bottom_mostx_top = (y+h)
+          if right_mostx_top < (x+w) : 
+            right_mostx_top = x+w 
+          # print x
+          # print y
+          # print w
+          # print h
+          # fx.write(str(x)+" "+str(y)+" "+str(x+w)+" "+str(y+h)+"\n")
 # fx.close()
 # fy.close()
 # Finally show the image
@@ -130,11 +153,18 @@ right_mostx = right_mostx + crop_pad
 # cv2.imshow('img',img)
 # cv2.namedWindow('img',cv2.WINDOW_NORMAL)
 # cv2.imwrite("output4.png",img);
+if bottom_mostx_top==0:
+  left_mostx_top=0
+  right_mostx_top=1
+  top_mostx_top=0
+  bottom_mostx_top=1
 crop_yaxis = gray[top_mosty:bottom_mosty , left_mosty : right_mosty]
-crop_xaxis = gray[top_mostx:bottom_mostx , right_mosty : right_mostx]
+crop_xaxis = gray[top_mostx:bottom_mostx , left_mostx : right_mostx]
+crop_xaxis_top = gray[top_mostx_top:bottom_mostx_top , left_mostx_top : right_mostx_top]
 # cv2.imshow('res',thresh_color)
 # cv2.imshow('cropped y-axis',crop_yaxis)
 # cv2.imshow('cropped x-axis',crop_xaxis)
+cv2.imwrite("croppedtop.png",crop_xaxis_top);
 cv2.imwrite("croppedy.png",crop_yaxis);
 cv2.imwrite("croppedx.png",crop_xaxis);
 # cv2.waitKey(0)
