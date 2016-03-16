@@ -1,4 +1,3 @@
-import wx
 import numpy
 import warnings
 from numpy import array,mean,uint8
@@ -6,18 +5,32 @@ from PIL import Image
 import os
 import copy
 import glob
+import cv2
 
 noOfInterval = 15
 
 def find_nearest(array,value):
-	idx = (numpy.abs(array-value)).argmin()
-	idx1 = (numpy.abs(numpy.delete(array,idx)-value)).argmin()
+	idx = 0
+	idx1 = 0
+	array = array - value
+	array1 = [i for i in array if i >= 0]
+	array2 = [i for i in array if i < 0]
+	if array1:
+		idx = array1.index(min(array1))
+	else:
+		idx = -1
+	if array2:
+		idx1 = array2.index(max(array2))
+	else:
+		idx = -1
 	return idx, idx1
 
 def plotpoints(file, filename):
 	filename = filename.split("_")[0]
 	im = numpy.asarray(Image.open(file))
-	size=wx.Image(file).GetSize()
+	im1 = cv2.imread(file)
+	width, height, channels = im1.shape
+	size = (height, width)
 	points = []
 	axes=[]
 
@@ -44,8 +57,9 @@ def plotpoints(file, filename):
 		if x[0] > xmin and x[0] < xmax and x[1] > ymax and x[1] < ymin:
 			pt1 = pt1 + [x]
 
-	cal=(0,2.0e+07,1000,3.0e+07)
-	cal=array(cal).astype(float)
+	with open('axisvals.txt') as axisvals:
+		cal = axisvals.readlines()
+	cal = [float(x.strip('\n')) for x in cal]
 	xfac=float((cal[2]-cal[0])/(xmax-xmin))
 	yfac=float((cal[3]-cal[1])/(ymin-ymax))
 	pt1=array(pt1).astype(float)
@@ -53,26 +67,50 @@ def plotpoints(file, filename):
 	pt1[:,1]=(size[1]-pt1[:,1]-ymax)*yfac+cal[1]
 
 	""" TAKING OUT ONLY 15 POINTS CORRESPONDING TO THE X-AXIS """
-	minX = pt1[0][0]
-	maxX = pt1[len(pt1)-1][0]
+	minX = cal[0]
+	maxX = cal[2]
 	difference = maxX - minX
 	interval = difference/noOfInterval
 	counter = 0
 	newPt = []
 	pt1 = numpy.asarray(pt1)
-	# print pt1
+	
 	for i in xrange(0,16):
 		val = minX + (interval * i)
+
 		closest, closest1 = (find_nearest(pt1[:,0], val))
-		avg = (pt1[closest][1] + pt1[closest1][1])/2.0
-		val = "%.2f" % round(val,2)
-		avg = "%.2f" % round(avg,2)
+		if closest == -1 and closest1 == -1:
+			avg = "-"
+		elif closest == -1 and closest1 != -1:
+			if pt1[closest1][0] - val > (0.05 * interval):
+				avg = "-"
+			else:
+				avg = pt1[closest1][1]
+		elif closest != -1 and closest1 == -1:
+			if pt1[closest][0] - val > (0.05 * interval):
+				avg = "-"
+			else:
+				avg = pt1[closest][1]
+		else:
+			if pt1[closest1][0] - val > (0.05 * interval) and pt1[closest][0] - val > (0.05 * interval):
+				avg = "-"
+			elif pt1[closest][0] - val > (0.05 * interval):
+				avg = pt1[closest1][1]
+			elif pt1[closest1][0] - val > (0.05 * interval):
+				avg = pt1[closest][1]
+			else:
+				avg = (pt1[closest][1] + pt1[closest1][1])/2.0
 		newPt.append([val, avg])
+	for singlePoint in newPt:
+		if (singlePoint[1] == '-'):
+			singlePoint[0] = "%.5f" % (round(singlePoint[0], 5))
+		else:
+			singlePoint[0] = "%.5f" % (round(singlePoint[0], 5))
+			singlePoint[1] = "%.5f" % (round(singlePoint[1], 5))
 
 	with open(filename + '_plot.txt', 'a') as outfile:
 		for point in newPt:
 			point = str(point)
-			# print point
 			point = point.strip('[')
 			point = point.strip(']')
 			point = point.strip("'")

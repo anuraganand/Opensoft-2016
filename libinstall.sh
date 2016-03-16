@@ -9,8 +9,15 @@ sudo apt-get --purge autoremove liblept4 -y
 #Installing Ghostscript
 sudo apt-get install ghostscript -y
 
+#Dependencies for ./autobuild in Leptonica-1.73
+sudo apt-get install libtool -y
+sudo apt-get install autotools-dev -y
+sudo apt-get install automake -y
+
+cd Backend
+
 #Installing Leptonica-1.73
-tar -zxvf /Backend/leptonica-1.73.tar.gz
+tar -zxvf leptonica-1.73.tar.gz
 cd leptonica-1.73
 ./autobuild
 ./configure
@@ -19,7 +26,7 @@ sudo make install
 cd ..
 
 #Installing Tessetact-OCR
-tar -zxvf /Backend/tesseract-master.tar.gz
+tar -zxvf tesseract-master.tar.gz
 cd tesseract-master
 ./autogen.sh
 ./configure
@@ -33,5 +40,12 @@ cd pyfpdf
 sudo python setup.py install
 
 
-# matplotlib
-# python-opencv
+
+#Installing Matplotlib and building it.
+sudo apt-get install python-matplotlib -y
+
+#Dependencies for Python-OpenCV
+sudo apt-get install libjpeg8-dev libtiff5-dev libjasper-dev libpng12-dev -y
+#Installing Python-OpenCV
+sudo apt-get install python-opencv -y
+
