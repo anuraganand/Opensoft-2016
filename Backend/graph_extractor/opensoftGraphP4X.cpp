@@ -24,6 +24,9 @@ int main(int argc, char ** argv)
     Mat src;
     Mat src1= imread("image_tick_tackX.jpg",0);
     GaussianBlur(src1, src, Size(3,3), 1.0 );
+    char namedir[50];
+    strcpy(namedir,argv[2]);
+
     //cout << src.cols << " " << src.rows << endl;
     int i,j;
     for(i=0;i<src.cols;i++){
@@ -47,7 +50,7 @@ int main(int argc, char ** argv)
             temp.at<uchar>(j,i)=0;
         }
     }
-    for(i=75;i<=255;i++){
+    for(i=20;i<=255;i++){
         for(vector<pair<int,int> >::iterator it=v1[i].begin();it!=v1[i].end();it++){
             temp.at<uchar>((*it).first,(*it).second)=255;
         }
@@ -59,17 +62,17 @@ int main(int argc, char ** argv)
         }
     }
 
-    for(i=0;i<temp.cols;i++){
-        for(j=0;j<5;j++){
+    /*for(i=0;i<temp.cols;i++){
+        for(j=0;j<1;j++){
             temp.at<uchar>(temp.rows-1-j,i)=0;
         }
-    }
+    }*/
 
-    for(i=0;i<temp.cols;i++){
+    /*for(i=0;i<temp.cols;i++){
         for(j=20;j<temp.rows;j++){
             temp.at<uchar>(j,i)=0;
         }
-    }
+    }*/
 
     for(map<int,int>::iterator it=mp1.begin();it!=mp1.end();it++){
         printf("%d...%d\n",(*it).first,(*it).second);
@@ -79,8 +82,9 @@ int main(int argc, char ** argv)
     //     for(j=0;j<min(src.cols-1-i+1,))
     // }
 
-    // namedWindow( "meme",  WINDOW_NORMAL);
-    // imshow("meme",temp);
+    /*namedWindow( "meme",  WINDOW_NORMAL);
+    imshow("meme",temp);
+    waitKey(0);*/
     //imwrite("contour_ticks.jpg",temp);
 
 
@@ -122,7 +126,7 @@ int main(int argc, char ** argv)
             // Find the bounding rectangle for biggest contour
             bounding_rect=boundingRect(contours[i]);
         }
-        if(a > 50.0 && a<1000.0){
+        if(a > 10.0 && a<1000.0){
             printf("lol\n");
             bounding_rect=boundingRect(contours[i]);
             int left = (double)bounding_rect.width/5000;
@@ -137,9 +141,9 @@ int main(int argc, char ** argv)
             recCord.push_back(bounding_rect.x);
             drawContours( src, contours,i, color, CV_FILLED,8,hierarchy);
             contours1.push_back(contours[i]);
-             namedWindow( "Display window", WINDOW_NORMAL );
-             // imshow( "Display window", src );    
-             // waitKey(0);
+             /*namedWindow( "Display window", WINDOW_NORMAL );
+             imshow( "Display window", src );    
+             waitKey(0);*/
 
         }  
         drawContours( src, contours,i, color, CV_FILLED,8,hierarchy);
@@ -149,6 +153,16 @@ int main(int argc, char ** argv)
     string name=argv[1];
     strcpy(buf,name.c_str());
     FILE *f = fopen(buf,"w");
+    fprintf(f, "%d\n", recCord.size());
+    for(i=0;i<recCord.size();i++){
+        fprintf(f, "%d\n", recCord[i]-recCord[0]);
+    }
+
+
+    string name1=argv[2];
+    strcpy(buf,name1.c_str());
+    
+    f = fopen(buf,"w");
     fprintf(f, "%d\n", recCord.size());
     for(i=0;i<recCord.size();i++){
         fprintf(f, "%d\n", recCord[i]-recCord[0]);
