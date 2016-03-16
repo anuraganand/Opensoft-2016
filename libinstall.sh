@@ -14,8 +14,10 @@ sudo apt-get install libtool -y
 sudo apt-get install autotools-dev -y
 sudo apt-get install automake -y
 
+cd Backend
+
 #Installing Leptonica-1.73
-tar -zxvf /Backend/leptonica-1.73.tar.gz
+tar -zxvf leptonica-1.73.tar.gz
 cd leptonica-1.73
 ./autobuild
 ./configure
@@ -24,7 +26,7 @@ sudo make install
 cd ..
 
 #Installing Tessetact-OCR
-tar -zxvf /Backend/tesseract-master.tar.gz
+tar -zxvf tesseract-master.tar.gz
 cd tesseract-master
 ./autogen.sh
 ./configure
