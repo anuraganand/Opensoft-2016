@@ -61,8 +61,9 @@ vector<pair<pii,int> > diff;
 int count1[1001];
 
 int main(){
-	FILE *ftr=fopen("axisvalsy.txt","r");
+	FILE *ftr=fopen("axisvaly.txt","r");
 	char c[1001];
+	debug;
 	fscanf(ftr,"%s",c);
 	int temp;
 	int i=0;
@@ -78,13 +79,9 @@ int main(){
 			i=1-i;
 		}
 	}
+	debug;
 
 	sort(all(values));
-
-	// rep(t1,values){
-	// 	printf("%d ",t1.y);
-	// }
-	// printf("\n");
 
 	For(i,0,values.size()-1){
 		int temp=abs(values[i].y-values[i+1].y);
@@ -93,6 +90,8 @@ int main(){
 
 	int max1=-1;
 	int pos1=-1;
+	int sum1=0;
+	int count=0;
 
 	For(i,0,1001){
 		if(count1[i]>max1){
@@ -101,8 +100,16 @@ int main(){
 		}
 	}
 
+	For(i,0,values.size()-1){
+		if(abs(values[i].y-values[i+1].y)==pos1){
+			sum1+=abs(values[i].x-values[i+1].x);
+			count++;
+		}
+	}
+
 	vi answer1;
 	max1=-1;
+	debug;
 
 	For(i,0,values.size()){
 		vi temp;
@@ -115,27 +122,91 @@ int main(){
 			}
 		}
 
-		temp.pb(values[i].y-(values.size()-i)*pos1);
-		// printf("%d-->",i);
-		// rep(t1,temp){
-		// 	printf("%d ",t1);
-		// }
-		// printf("\n");
+		//temp.pb(values[i].y+(values.size()-i)*pos1);
 
-		int count1=0;
+		int count2=0;
 		For(j,0,values.size()){
 			if(temp[j]==values[j].y){
-				count1++;
+				count2++;
 			}
 		}
-		if(count1>max1){
-			max1=count1;
+		if(count2>max1){
+			max1=count2;
 			answer1=temp;
 		}
 	}
 
-	FILE* p = fopen("axisvalsy.txt","w");
-	fprintf(p, "%d\n%d\n%d",answer1[0],answer1[answer1.size()-2],answer1[answer1.size()-1]);
+	debug;
+
+	vector<pair<double,double> > function;
+	vector<double> lol;
+
+	For(j,0,values.size()){
+		if(answer1[j]==values[j].y){
+			function.pb(mp(values[j].x,values[j].y));
+		}
+	}
+	double temp2=0;
+	int k=i;
+	double min1=0;
+	double max11=0;
+	double max12=0;
+	for(int i=0;i<function.size();i++){
+		temp2=1;
+		k=i;
+		for(int j=0;j<function.size();j++){
+			if(k==j){
+				continue;
+			}
+			else{
+				temp2=temp2*(values[0].x-function[j].x)/(function[k].x-function[j].x);
+			}
+		}
+		lol.pb(temp2*function[i].y);
+	}
+
+	rep(t1,lol){
+		min1=min1+t1;
+	}
+	lol.clear();
+
+	for(int i=0;i<function.size();i++){
+		temp2=1;
+		k=i;
+		for(int j=0;j<function.size();j++){
+			if(k==j){
+				continue;
+			}
+			else{
+				temp2=temp2*(values[values.size()-1].x-function[j].x)/(function[k].x-function[j].x);
+			}
+		}
+		lol.pb(temp2*function[i].y);
+	}
+	rep(t1,lol){
+		max11+=t1;
+	}
+	lol.clear();
+
+	for(int i=0;i<function.size();i++){
+		temp2=1;
+		k=i;
+		for(int j=0;j<function.size();j++){
+			if(k==j){
+				continue;
+			}
+			else{
+				temp2=temp2*(values[values.size()-1].x-pos1-function[j].x)/(function[k].x-function[j].x);
+			}
+		}
+		lol.pb(temp2*function[i].y);
+	}
+	rep(t1,lol){
+		max12+=t1;
+	}
+
+	FILE* p = fopen("axisvaly.txt","w");
+	fprintf(p, "%.2lf\n%.2lf\n%.2lf",min1,max11,max12);
 	fclose(p);
 
 return 0;}
