@@ -31,6 +31,9 @@ int main(){
 	system("g++ -std=c++11 -ggdb `pkg-config --cflags opencv` -o opensoft4X opensoftGraphP4X.cpp `pkg-config --libs opencv`");
 	system("g++ -std=c++11 -ggdb `pkg-config --cflags opencv` -o opensoft4Y opensoftGraphP4Y.cpp `pkg-config --libs opencv`");
 
+	// system("g++ -std=c++11 -ggdb `pkg-config --cflags opencv` -o opensoft1 opensoftGraphP1.cpp `pkg-config --libs opencv`");
+	// system("g++ -std=c++11 -ggdb `pkg-config --cflags opencv` -o opensoft2 opensoftGraphP2.cpp `pkg-config --libs opencv`");
+	
 	//while(1){};
 	for(int i=0;i<fileName.size();i++){
 		//finished calling the first part of commands

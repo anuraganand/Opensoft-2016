@@ -640,7 +640,11 @@ void onTrackbar()
 			    mkdir(dirname, 0777);
 			}
 			cout << "file name---->>>> %s\n" + name+".jpg" << endl;
+<<<<<<< HEAD
 			imwrite(name+".jpg",imagecropped);
+=======
+>>>>>>> f9cf54826e04a8832bf2effd82f8f371e074c3ee
+			imwrite(name+".png",imagecropped);
 		}
 	}
 	//end of code
@@ -656,8 +660,8 @@ void onTrackbar()
 			line( cdst, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, CV_AA);
 			//break;
 	}
-	imshow("detected lines", cdst);
-	waitKey(0);
+	//imshow("detected lines", cdst);
+	//waitKey(0);
 	cout << "kk" << endl;
 	alreadyFunced=true;
 }

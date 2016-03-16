@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 graph_0.jpg
-graph_0_ticksX.txt
+graph_0.png
 graph_0.txt
 graph_1.jpg
-graph_1_ticksX.txt
+graph_1.png
 graph_1.txt
+=======
+>>>>>>> f9cf54826e04a8832bf2effd82f8f371e074c3ee

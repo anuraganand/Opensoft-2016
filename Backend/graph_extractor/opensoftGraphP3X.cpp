@@ -27,13 +27,28 @@ int main(int argc, char ** argv){
     FILE *f=fopen(buf,"r");
     fscanf(f,"%d %d %d %d",&minx,&miny,&maxx,&maxy);
 
-    cv:: Rect myRect(minx-10.0,maxy-30.0,(maxx-minx)+60.0,20);
+    int left = minx - 10.0;
+    int up = maxy-30.0;
+    int width = (maxx-minx)+60.0;
+    int height = 20.0;
+
+    if(left < 0.0)
+        left = 0;
+    if(up < 0)
+        up=0;
+    if(maxx+50 > (I.cols-1))
+        width = (I.cols -1- left);
+    printf("%d--->>%d--->>%d--->>%d--->>%d--->%d--->%d--->%d--->%d--->%d\n",minx,miny,maxx,maxy,I.rows,I.cols,left,up,width,height);
+
+    cv:: Rect myRect(minx-10,maxy-10,maxx-minx,20);
+    rectangle(I,myRect,Scalar(0,0,0),1,8,0);
     cv::Mat imagecropped=I(myRect);
     string name="graph_axes_0.jpg";
 
     I = imagecropped;
-    //imshow(name,I);
-    //waitKey(0);
+    namedWindow( name,  WINDOW_NORMAL);    
+     // imshow(name,I);
+     // waitKey(0);
     imwrite("graph0_fftx.jpg",I);
 
     return 0;
