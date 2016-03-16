@@ -47,7 +47,7 @@ def call_write(file):
 
 def main():
 	html = ''
-	for file in glob.glob("*.txt"):
+	for file in glob.glob("*_plot.txt"):
 	    # print(file)
 	    html = html + call_write(file)
 	# print html
