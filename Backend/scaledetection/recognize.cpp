@@ -167,7 +167,7 @@ int main(int argc, char **argv)
       tmp.y1=y1;
       tmp.y2=y2;
       data.push_back(tmp);
-        printf("%s %d %d %d %d\n",word, x1, y1, x2, y2);
+       // printf("%s %d %d %d %d\n",word, x1, y1, x2, y2);
         // rectangle(img,cvRect(x1,y1,x2-x1,y2-y1),CV_RGB(255,0,0));
       delete[] word;
     } while (ri->Next(level));
