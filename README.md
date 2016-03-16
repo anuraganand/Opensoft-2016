@@ -1,5 +1,5 @@
 # Opensoft-2016
-Repository for LBS Opensoft
+Repository for Team-4 Opensoft
 
 ## Installing ghostscript
 ```shell
