@@ -1,5 +1,5 @@
-python crop_morphology.py $1 $2
-g++ -g recognize.cpp -llept -ltesseract
-./a.out croppedx.png 1
-./a.out croppedy.png 0
+pwd
+python ../../../scaledetection/crop_morphology.py $1 $2
+../../../scaledetection/a.out croppedx.png 1
+../../../scaledetection/a.out croppedy.png 0
 
