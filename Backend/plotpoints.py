@@ -67,8 +67,8 @@ def plotpoints(file, filename):
 	# cal = [float(x.strip('\n')) for x in cal]
 	cal[0] = calx[0]
 	cal[1] = caly[0]
-	cal[2] = calx[2]
-	cal[3] = caly[2]
+	cal[2] = calx[1]
+	cal[3] = caly[1]
 	xfac=float((cal[2]-cal[0])/(xmax-xmin))
 	yfac=float((cal[3]-cal[1])/(ymin-ymax))
 	pt1=array(pt1).astype(float)
