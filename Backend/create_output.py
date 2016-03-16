@@ -1,4 +1,5 @@
 import glob
+import os
 from fpdf import FPDF, HTMLMixin
  
 title = ''
@@ -55,14 +56,12 @@ def main():
 		legends.append(secondWord)
 	
 	legends = [l.strip("\n") for l in legends]
+	print legends
 	for file in glob.glob("*_plot.txt"):
 	    html = html + call_write(file, legends)
+	with open(str(os.getcwd().split("graph_extractor",1)[1].replace("/","_")) + '_html.txt', 'a') as infile:
+		infile.write(html);
 	print html
-	pdf = MyFPDF()
-	pdf.add_page()
-	pdf.write_html(html)
-
-	pdf.output('html.pdf','F')
 
 if __name__ == '__main__':
 	main()

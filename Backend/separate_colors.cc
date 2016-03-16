@@ -393,9 +393,9 @@ void separateColors(Mat& img) {
     }
 
     sort(hueVals.rbegin(), hueVals.rend());
-    cerr << hueVals.size() << "\n";
+    // cerr << hueVals.size() << "\n";
     for (int i = 0; i < 30 and i < hueVals.size(); ++i) {
-        printf("i : %d [%d]\n", i, hueVals[i].second);
+        // printf("i : %d [%d]\n", i, hueVals[i].second);
     }
 
     vector < vector <int> > visited(img.rows, vector <int> (img.cols, -1));
@@ -433,7 +433,7 @@ void separateColors(Mat& img) {
                 }
             }
             if (!idxMap.count(idx)) {
-                printf("idx : %d colorId : %d [%d, %d, %d] at (%d, %d)\n", idx, colorId, hueVals[idx].second, s, v, x, y);
+                // printf("idx : %d colorId : %d [%d, %d, %d] at (%d, %d)\n", idx, colorId, hueVals[idx].second, s, v, x, y);
                 idxMap[idx] = colorId++;
             }
 
@@ -503,7 +503,7 @@ void separateColors(Mat& img) {
         char name[50];
         sprintf(name, "color_%lld_%lld_%lld.png", colorSums[i].h, colorSums[i].s, colorSums[i].v);
 
-        cerr << name << " " << countWhitePixels(separated[i]) << "\n";
+        // cerr << name << " " << countWhitePixels(separated[i]) << "\n";
 
         // namedWindow(name, WINDOW_NORMAL);
         // imshow(name, separated[i]);
@@ -567,7 +567,7 @@ int main(int argc, char const *argv[]) {
     if (argc > 2)
         loadLegendBoundaries(argv[3]);
 
-    printf("LEGEND [%d, %d] to [%d, %d]\n", LEGEND_MIN_X, LEGEND_MIN_Y, LEGEND_MAX_X, LEGEND_MAX_Y);
+    // printf("LEGEND [%d, %d] to [%d, %d]\n", LEGEND_MIN_X, LEGEND_MIN_Y, LEGEND_MAX_X, LEGEND_MAX_Y);
 
     isLegend.assign(image.rows, vector <bool>(image.cols, false));
 
