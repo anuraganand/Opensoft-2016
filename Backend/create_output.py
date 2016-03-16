@@ -18,7 +18,7 @@ def table_html(points):
 	md_tags = '</td><td>'
 	cl_tags = '</td></tr>'
 	yield '<H1 align="center">html2fpdf</H1>'
-	yield '<table border="1" align="center" width="75%">'
+	yield '<table border="1" align="center" width="100%">'
 	yield '<thead><tr>'
 	# yield '<th width="%s">%s</th><th width="%s">%s</th>' % (,,,)
 	for i in xrange(int(ni)):
