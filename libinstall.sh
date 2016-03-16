@@ -33,3 +33,5 @@ cd pyfpdf
 sudo python setup.py install
 
 
+# matplotlib
+# python-opencv

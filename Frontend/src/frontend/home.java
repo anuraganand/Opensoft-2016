@@ -29,7 +29,7 @@ public class home extends javax.swing.JFrame {
     int isfilepicked = 0;
     FileNameExtensionFilter filterpdf = new FileNameExtensionFilter("PDF Documents", "pdf");
     FileNameExtensionFilter filterimage = new FileNameExtensionFilter("Images", "jpeg", "jpg", "png");
-    String RESOLUTION = "100";
+    String RESOLUTION = "300";
     String selectedFile = "";
     /**
      * Creates new form home
@@ -118,7 +118,8 @@ public class home extends javax.swing.JFrame {
                 if (isfilepicked !=0)
                 {
                     loadergif.setVisible(true);
-                    loadPlots();
+//                    loadPlots();
+                    loadLegends();
                 } 
                 else {
                     filename.setText("Pick a file first!");
@@ -150,7 +151,7 @@ public class home extends javax.swing.JFrame {
         try {
             Process p = Runtime.getRuntime().exec(cmd);
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(p.getErrorStream()) );
+                    new InputStreamReader(p.getInputStream()) );
             String line;
             while ((line = in.readLine()) != null) {
                 System.err.println(line);
@@ -164,6 +165,49 @@ public class home extends javax.swing.JFrame {
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
+    }
+    
+    void loadLegends() {
+        File file = new File("../Backend/graph_extractor");
+        String[] names = file.list();
+        
+        
+        for(String name : names) {
+            if (name.startsWith("test_") && 
+                    new File("../Backend/graph_extractor/" + name).isDirectory()) {
+                String curPath = "../Backend/graph_extractor/" + name;
+                String[] localFiles = new File(curPath).list();
+                for (String fileName : localFiles) {
+                    if (fileName.endsWith(".png")) {
+                        String nm = fileName.split("\\.")[0];
+                        String pref = "graph_extractor/" + name + "/";
+                        System.err.println("file name " + nm);
+                        try {
+                            String[] cmd = {"sh", "-c", ""};
+                            cmd[2] = "cd ../Backend && ./legend_detection " 
+                                    + pref + nm + ".png " 
+                                    + pref + nm + ".txt "
+                                    + pref + nm + "_legend.txt";
+                            System.err.println(Arrays.deepToString(cmd));
+                            Process p = Runtime.getRuntime().exec(cmd);
+                            BufferedReader in = new BufferedReader(
+                                    new InputStreamReader(p.getErrorStream()));
+                            String line;
+                            while ((line = in.readLine()) != null) {
+                                System.err.println(line);
+                            }
+                            in.close();
+                            p.waitFor();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+        System.err.println("Legends added");
     }
     /**
      * This method is called from within the constructor to initialize the form.

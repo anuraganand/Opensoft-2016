@@ -670,6 +670,7 @@ void onTrackbar()
 			cout << "file name---->>>> %s\n" + name+".jpg" << endl;
 			imwrite(path+"/"+graphname+".jpg",imagecropped);
 			imwrite(path+"/"+graphname+".png",imagecropped);
+
 			imwrite(name+".jpg",imagecropped);
 			imwrite(name+".png",imagecropped);
 
