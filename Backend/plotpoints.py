@@ -7,6 +7,13 @@ import os
 import copy
 import glob
 
+noOfInterval = 15
+
+def find_nearest(array,value):
+	idx = (numpy.abs(array-value)).argmin()
+	idx1 = (numpy.abs(numpy.delete(array,idx)-value)).argmin()
+	return idx, idx1
+
 def plotpoints(file, filename):
 	filename = filename.split("_")[0]
 	im = numpy.asarray(Image.open(file))
@@ -39,16 +46,49 @@ def plotpoints(file, filename):
 
 	cal=(0,2.0e+07,1000,3.0e+07)
 	cal=array(cal).astype(float)
-	xfac=(cal[2]-cal[0])/(xmax-xmin)
-	yfac=(cal[3]-cal[1])/(ymin-ymax)
+	xfac=float((cal[2]-cal[0])/(xmax-xmin))
+	yfac=float((cal[3]-cal[1])/(ymin-ymax))
 	pt1=array(pt1).astype(float)
 	pt1[:,0]=(pt1[:,0]-xmin)*xfac+cal[0]
 	pt1[:,1]=(size[1]-pt1[:,1]-ymax)*yfac+cal[1]
-	with open(filename + '_plot.txt', 'a') as outfile:
-		outfile.write('\n')
-		for point in pt1:
-			outfile.write('{0:.2f} {1:.2f}\n'.format(point[0],point[1]))
 
+	""" TAKING OUT ONLY 15 POINTS CORRESPONDING TO THE X-AXIS """
+	minX = pt1[0][0]
+	maxX = pt1[len(pt1)-1][0]
+	difference = maxX - minX
+	interval = difference/noOfInterval
+	counter = 0
+	newPt = []
+	pt1 = numpy.asarray(pt1)
+	# print pt1
+	for i in xrange(0,16):
+		val = minX + (interval * i)
+		closest, closest1 = (find_nearest(pt1[:,0], val))
+		avg = (pt1[closest][1] + pt1[closest1][1])/2.0
+		val = "%.2f" % round(val,2)
+		avg = "%.2f" % round(avg,2)
+		newPt.append([val, avg])
+
+	with open(filename + '_plot.txt', 'a') as outfile:
+		for point in newPt:
+			point = str(point)
+			# print point
+			point = point.strip('[')
+			point = point.strip(']')
+			point = point.strip("'")
+			point = point.replace("', '"," ")
+			outfile.write(point)
+			outfile.write("\n")
+		outfile.write('<>\n')
+
+pngCounter = len(glob.glob1(os.getcwd(),"*.png"))
+for file in glob.glob("*.png"):
+	filename = str(file)
+	filename = os.path.splitext(filename)[0]
+	filename = filename.split("_")[0]
+	with open(filename + '_plot.txt', 'a') as outfile:
+		outfile.write(str(pngCounter) + '\n')
+	break
 for file in glob.glob("*.png"):
     print(file)
     filename = str(file)

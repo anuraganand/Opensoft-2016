@@ -148,9 +148,9 @@ int main(int argc,char **argv){
 
 
  	printf("%d..%d..%d..%d\n",minx,miny,maxx,maxy);
- 	namedWindow( "detected lines",  WINDOW_NORMAL);
- 	imshow("detected lines",src);
- 	waitKey(0);
+ 	// namedWindow( "detected lines",  WINDOW_NORMAL);
+ 	// imshow("detected lines",src);
+ 	// waitKey(0);
  	ftr=fopen(buf,"w");
  	fprintf(ftr, "%d\n%d\n%d\n%d\n",minx,miny,maxx,maxy);
 }

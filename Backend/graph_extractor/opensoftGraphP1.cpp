@@ -657,7 +657,7 @@ void onTrackbar()
 			}
 			cout << "file name---->>>> %s\n" + name+".jpg" << endl;
 			imwrite(name+".jpg",imagecropped);
-
+			imwrite(name+".png",imagecropped);
 
 
 			int ltx1,lty1,rbx1,rby1;
@@ -676,7 +676,6 @@ void onTrackbar()
 			fprintf(ftr,"%d\n",rbx1);
 			fprintf(ftr,"%d\n",rby1);
 			fclose(ftr);
-
 
 			Point2f a(rectanglesForAxes[i].lt.first,rectanglesForAxes[i].lt.second);
 		    Point2f b(rectanglesForAxes[i].rb.first,rectanglesForAxes[i].rb.second);
