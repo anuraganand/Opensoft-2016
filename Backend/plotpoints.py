@@ -34,8 +34,10 @@ def plotpoints(file, filename):
 	points = []
 	axes=[]
 
-	with open(filename + '.txt') as infile:
-		content = infile.readlines()
+	infile = glob.glob1(os.getcwd(),"graph_[0-p]*.txt")[0]
+	print "infile ", infile
+
+	content = open(infile).readlines()
 
 	content = [x.strip('\n') for x in content]
 	xmin=int(content[0])
@@ -57,9 +59,16 @@ def plotpoints(file, filename):
 		if x[0] > xmin and x[0] < xmax and x[1] > ymax and x[1] < ymin:
 			pt1 = pt1 + [x]
 
-	with open('axisvals.txt') as axisvals:
-		cal = axisvals.readlines()
-	cal = [float(x.strip('\n')) for x in cal]
+	with open('axisvalsx.txt') as axisvals:
+		calx = axisvals.readlines()
+	with open('axisvalsy.txt') as axisvals:
+		caly = axisvals.readlines()	
+
+	# cal = [float(x.strip('\n')) for x in cal]
+	cal[0] = calx[0]
+	cal[1] = caly[0]
+	cal[2] = calx[1]
+	cal[3] = caly[1]
 	xfac=float((cal[2]-cal[0])/(xmax-xmin))
 	yfac=float((cal[3]-cal[1])/(ymin-ymax))
 	pt1=array(pt1).astype(float)
@@ -119,15 +128,17 @@ def plotpoints(file, filename):
 			outfile.write("\n")
 		outfile.write('<>\n')
 
-pngCounter = len(glob.glob1(os.getcwd(),"*.png"))
-for file in glob.glob("*.png"):
+pngCounter = len(glob.glob1(os.getcwd(),"*color*.png"))
+print glob.glob1(os.getcwd(),"*color*.png")
+
+for file in glob.glob("*color*.png"):
 	filename = str(file)
 	filename = os.path.splitext(filename)[0]
 	filename = filename.split("_")[0]
 	with open(filename + '_plot.txt', 'a') as outfile:
 		outfile.write(str(pngCounter) + '\n')
 	break
-for file in glob.glob("*.png"):
+for file in glob.glob("*color*.png"):
     print(file)
     filename = str(file)
     filename = os.path.splitext(filename)[0]

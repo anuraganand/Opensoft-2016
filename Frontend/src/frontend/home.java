@@ -119,8 +119,8 @@ public class home extends javax.swing.JFrame {
                 {
                     loadergif.setVisible(true);
 //                    loadPlots();
-                    loadLegends();
-                    separateColors();
+//                    loadColorsAndLegends();
+                      generateScalesAndOutput();
                 } 
                 else {
                     filename.setText("Pick a file first!");
@@ -168,7 +168,7 @@ public class home extends javax.swing.JFrame {
         }
     }
     
-    void loadLegends() {
+    void loadColorsAndLegends() {
         File home = new File("../Backend/graph_extractor");
         String[] dirs = home.list();
         
@@ -184,43 +184,27 @@ public class home extends javax.swing.JFrame {
                             String base = file.split("\\.")[0];
                             System.err.println("base : " + base);
                             String pref = "graph_extractor/" + dir + "/" + subdir + "/";
-                            try {
-                                String[] cmd = {"sh", "-c", ""};
-                                cmd[2] = "cd ../Backend && ./legend_detection " 
-                                        + pref + base + ".png " 
-                                        + pref + base + ".txt "
-                                        + pref + base + "_legend.txt";
-                                System.err.println(Arrays.deepToString(cmd));
-                                Process p = Runtime.getRuntime().exec(cmd);
-                                BufferedReader in = new BufferedReader(
-                                        new InputStreamReader(p.getErrorStream()));
-                                String line;
-                                while ((line = in.readLine()) != null) {
-                                    System.err.println(line);
-                                }
-                                in.close();
-                                p.waitFor();
-                                
-                                cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
-                                        + "../../../separate_colors " + base + ".png " + base + ".txt "
-                                        + base + "_legend.txt";
-                                
-                                System.err.println(Arrays.deepToString(cmd));
-                                p = Runtime.getRuntime().exec(cmd);
-                                p.waitFor();
-                                
-                                cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
-                                        + "../../../match_legend " + base + ".png " + base + "_legend.txt "
-                                        + "colors.txt";
-                                System.err.println(Arrays.deepToString(cmd));
-                                p = Runtime.getRuntime().exec(cmd);
-                                p.waitFor();
-                                
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            } catch (InterruptedException ex) {
-                                ex.printStackTrace();
-                            }
+                            String[] cmd = {"sh", "-c", ""};
+                            
+                            cmd[2] = "cd ../Backend && ./legend_detection "
+                                    + pref + base + ".png "
+                                    + pref + base + ".txt "
+                                    + pref + base + "_legend.txt";
+                            System.err.println(Arrays.deepToString(cmd));
+                            executeCommandSh(cmd);
+
+                            cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
+                                    + "../../../separate_colors " + base + ".png " + base + ".txt "
+                                    + base + "_legend.txt";
+
+                            System.err.println(Arrays.deepToString(cmd));
+                            executeCommandSh(cmd);
+
+                            cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
+                                    + "../../../match_legend " + base + ".png " + base + "_legend.txt "
+                                    + "colors.txt";
+                            System.err.println(Arrays.deepToString(cmd));
+                            executeCommandSh(cmd);
                         }
                     }
                 }
@@ -229,8 +213,60 @@ public class home extends javax.swing.JFrame {
         System.err.println("Legends added");
     }
     
-    void separateColors() {
+    void generateScalesAndOutput() {
+        File home = new File("../Backend/graph_extractor");
+        String[] dirs = home.list();
         
+        for(String dir : dirs) {
+            if (dir.startsWith("test_") && 
+                    new File("../Backend/graph_extractor/" + dir).isDirectory()) {
+                String[] subdirs = new File("../Backend/graph_extractor/" + dir).list();
+                for (String subdir : subdirs) {
+                    if (subdir.startsWith("graph_") &&
+                            new File("../Backend/graph_extractor/" + dir + "/" + subdir).isDirectory()) {
+                        String pref = new File("../Backend/graph_extractor/" + dir + "/" + subdir).getAbsolutePath();
+                        String[] files = new File("../Backend/graph_extractor/" + dir + "/" + subdir).list();
+                        for (String file : files) if (file.endsWith(".png") && file.startsWith("graph_")){
+                            String base = file.split("\\.")[0];
+                            System.err.println("base : " + base);
+                            String[] cmd = {"sh", "-c", ""};
+                            cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
+                                    + "sh ../../../scaledetection/findaxis.sh " + base + ".png " + base + ".txt ";
+
+                            System.err.println(Arrays.deepToString(cmd));
+                            executeCommandSh(cmd);
+                            
+                            cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
+                                    + "../../../testx";
+                            executeCommandSh(cmd);
+                            
+                            cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
+                                    + "../../../testy";
+                            
+                        }
+                    }
+                }
+            }
+        }
+        System.err.println("Output creation completed");
+    }
+    
+    void executeCommandSh(String[] cmd) {
+        try {
+            Process p = Runtime.getRuntime().exec(cmd);
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(p.getErrorStream()));
+            String line;
+            while ((line = in.readLine()) != null) {
+                System.err.println(line);
+            }
+            in.close();
+            p.waitFor();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
     }
     /**
      * This method is called from within the constructor to initialize the form.
