@@ -34,7 +34,7 @@ def plotpoints(file, filename):
 	points = []
 	axes=[]
 
-	infile = glob.glob1(os.getcwd(),"graph_[0-p]*.txt")[0]
+	infile = glob.glob1(os.getcwd(),"graph_[0-9]*.txt")[0]
 	print "infile ", infile
 
 	content = open(infile).readlines()

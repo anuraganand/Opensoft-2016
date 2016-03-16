@@ -23,6 +23,7 @@ top_mostx_top = y_origin
 bottom_mostx_top = 0
 
 input_points = open(sys.argv[2],"r")
+print sys.argv[2]
 ct=0
 for line in input_points:
   if ct==0:
@@ -37,7 +38,9 @@ for line in input_points:
 input_points.close()
 
 # Load the image
-img = cv2.imread(sys.argv[1]);
+img = cv2.imread(sys.argv[1])
+print sys.argv[1]
+
 # extendr = cv2.row(img) / 20
 # extendc = cv2.col(img) / 20
 extendr = 0
@@ -169,3 +172,4 @@ cv2.imwrite("croppedy.png",crop_yaxis);
 cv2.imwrite("croppedx.png",crop_xaxis);
 # cv2.waitKey(0)
 cv2.destroyAllWindows()
+print "Hello"

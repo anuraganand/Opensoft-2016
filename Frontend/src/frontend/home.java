@@ -119,8 +119,9 @@ public class home extends javax.swing.JFrame {
                 {
                     loadergif.setVisible(true);
 //                    loadPlots();
-//                    loadColorsAndLegends();
-                      generateScalesAndOutput();
+                    loadColorsAndLegends();
+//                      generateScalesAndData();
+                    generateOutput();
                 } 
                 else {
                     filename.setText("Pick a file first!");
@@ -213,7 +214,7 @@ public class home extends javax.swing.JFrame {
         System.err.println("Legends added");
     }
     
-    void generateScalesAndOutput() {
+    void generateScalesAndData() {
         File home = new File("../Backend/graph_extractor");
         String[] dirs = home.list();
         
@@ -243,12 +244,26 @@ public class home extends javax.swing.JFrame {
                             cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
                                     + "../../../testy";
                             
+                            cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
+                                    + "python plotpoints.py";
+                            executeCommandSh(cmd);
+                            
+                            cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
+                                    + "python rearrange.py";
+                            executeCommandSh(cmd);
+                            
+                            cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
+                                    + "../../../testy";
                         }
                     }
                 }
             }
         }
         System.err.println("Output creation completed");
+    }
+    
+    void generateOutput() {
+        
     }
     
     void executeCommandSh(String[] cmd) {
