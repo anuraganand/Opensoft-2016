@@ -640,7 +640,10 @@ void onTrackbar()
 			    mkdir(dirname, 0777);
 			}
 			cout << "file name---->>>> %s\n" + name+".jpg" << endl;
+<<<<<<< HEAD
 			imwrite(name+".jpg",imagecropped);
+=======
+>>>>>>> f9cf54826e04a8832bf2effd82f8f371e074c3ee
 			imwrite(name+".png",imagecropped);
 		}
 	}

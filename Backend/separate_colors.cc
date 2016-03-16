@@ -15,6 +15,9 @@ RNG rng(12345);
 int MIN_X, MAX_X;
 int MIN_Y, MAX_Y;
 
+int LEGEND_MIN_X, LEGEND_MIN_Y;
+int LEGEND_MAX_X, LEGEND_MAX_Y;
+
 const int dx[] = {-1, -1, -1, 0, 0, +1, +1, +1};
 const int dy[] = {-1, 0, +1, -1, +1, -1, 0, +1};
 
@@ -24,6 +27,13 @@ inline bool isBlack(int h, int s, int v) {
 
 inline bool isWhite(int h, int s, int v) {
     return h <= HSV_THRESH and s <= HSV_THRESH and v >= 100;
+}
+
+vector < vector <bool> > isLegend;
+
+inline bool isInsideLegend(int x, int y) {
+    return isLegend[x][y];
+    // return x >= LEGEND_MIN_X and x <= LEGEND_MAX_X and y >= LEGEND_MIN_Y and y <= LEGEND_MAX_Y;
 }
 
 void bfs(const Mat& img, vector < vector <int> >& visited, int x, int y, int hVal, int colorId) {
@@ -38,6 +48,8 @@ void bfs(const Mat& img, vector < vector <int> >& visited, int x, int y, int hVa
             int nx = x + dx[k];
             int ny = y + dy[k];
             if (nx >= MIN_X and nx <= MAX_X and ny >= MIN_Y and ny <= MAX_Y and visited[nx][ny] == -1) {
+                if (isInsideLegend(nx, ny))
+                    continue;
                 Vec3b val = img.at<Vec3b>(nx, ny);
                 int h = val.val[0];
                 int s = val.val[1];
@@ -348,6 +360,8 @@ void separateColors(Mat& img) {
     map <uchar, int> hueCount;
     for (int x = MIN_X; x <= MAX_X; ++x) {
         for (int y = MIN_Y; y <= MAX_Y; ++y) {
+            if (isInsideLegend(x, y))
+                continue;
             Vec3b val = img.at<Vec3b>(x, y);
             int h = val.val[0];
             int s = val.val[1];
@@ -384,6 +398,9 @@ void separateColors(Mat& img) {
 
     for (int x = MIN_X; x <= MAX_X; ++x) {
         for (int y = MIN_Y; y <= MAX_Y; ++y) {
+            if (isInsideLegend(x, y))
+                continue;
+
             if (visited[x][y] != -1)
                 continue;
 
@@ -423,7 +440,7 @@ void separateColors(Mat& img) {
         if (idxMap.count(i)) {
             for (int j = 0; j <= i; ++j) if (idxMap.count(j)) {
                 if (abs(hueVals[i].second - hueVals[j].second) <= HSV_THRESH) {
-                    printf("same %d and %d\n", i, j);
+                    // printf("same %d and %d\n", i, j);
                     eqClass[idxMap[i]] = idxMap[j];
                     break;
                 }
@@ -441,6 +458,9 @@ void separateColors(Mat& img) {
 
     for (int x = MIN_X; x <= MAX_X; ++x) {
         for (int y = MIN_Y; y <= MAX_Y; ++y) {
+            if (isInsideLegend(x, y))
+                continue;
+
             if (visited[x][y] == -1)
                 continue;
             int id = eqClass[visited[x][y]];
@@ -456,7 +476,7 @@ void separateColors(Mat& img) {
     const Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3));
     ofstream os("colors.txt");
     for (int i = 0; i < separated.size(); ++i) {
-        if (cnt[i] < 150)
+        if (cnt[i] < 200)
             continue;
         string win(1, 'a' + i);
 
@@ -468,8 +488,10 @@ void separateColors(Mat& img) {
 
         filterImage(img, separated[i]);
 
-        if (countWhitePixels(separated[i]) < 50)
+        if (countWhitePixels(separated[i]) < 150)
             continue;
+
+        // cerr << win << " " << countWhitePixels(separated[i]) << "\n";
 
         namedWindow(win, WINDOW_NORMAL);
         imshow(win, separated[i]);
@@ -495,13 +517,33 @@ void loadBoundaries(const string& path) {
     MAX_Y -= 5;
 }
 
+void loadLegendBoundaries(const string& path) {
+    ifstream is(path);
+    string text;
+    int x1, y1, x2, y2;
+
+    while (is >> text >> y1 >> x1 >> y2 >> x2) {
+        LEGEND_MIN_X = min(LEGEND_MIN_X, x1);
+        LEGEND_MAX_X = max(LEGEND_MAX_X, x2);
+        LEGEND_MIN_Y = min(LEGEND_MIN_Y, y1);
+        LEGEND_MAX_Y = max(LEGEND_MAX_Y, y2);
+    }
+
+    printf("LEGEND [%d, %d] to [%d, %d]\n", LEGEND_MIN_X, LEGEND_MIN_Y, LEGEND_MAX_X, LEGEND_MAX_Y);
+}
+
 int main(int argc, char const *argv[]) {
-    if(argc != 3) {
-        cout <<"Provide image file and description file" << endl;
+    if(argc != 4) {
+        cout <<"Provide image file, description file and legend file" << endl;
         return -1;
     }
 
     Mat image = imread(argv[1], CV_LOAD_IMAGE_COLOR);
+    if(!image.data) {
+        cout <<  "Could not open or find the image" << std::endl ;
+        return -1;
+    }
+
     loadBoundaries(argv[2]);
     MIN_X = max(MIN_X, 0);
     MAX_X = min(MAX_X, image.rows - 1);
@@ -509,12 +551,22 @@ int main(int argc, char const *argv[]) {
     MIN_Y = max(MIN_Y, 0);
     MAX_Y = min(MAX_Y, image.cols - 1);
 
-    if(!image.data) {
-        cout <<  "Could not open or find the image" << std::endl ;
-        return -1;
+    LEGEND_MIN_X = LEGEND_MIN_Y = 1e9;
+    LEGEND_MAX_X = LEGEND_MAX_Y = 0;
+    loadLegendBoundaries(argv[3]);
+
+    isLegend.assign(image.rows, vector <bool>(image.cols, false));
+
+    for (int i = max(0, LEGEND_MIN_X - 2); i <= LEGEND_MAX_X and i < image.rows; ++i) {
+        for (int j = max(0, LEGEND_MIN_Y - 2); j <= LEGEND_MAX_Y and j < image.cols; ++j) {
+            image.at<Vec3b>(i, j) = Vec3b(255, 255, 255);
+            isLegend[i][j] = true;
+        }
     }
+    
     separateColors(image);
     waitKey(0);
     destroyAllWindows();
+
     return 0;
 }
