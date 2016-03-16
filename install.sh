@@ -48,4 +48,11 @@ sudo apt-get install python-matplotlib -y
 sudo apt-get install libjpeg8-dev libtiff5-dev libjasper-dev libpng12-dev -y
 #Installing Python-OpenCV
 sudo apt-get install python-opencv -y
+#compile opencv.sh
+cd ..
+bash opencv.sh
+
+#compile install.sh
+
+bash compile.sh
 
