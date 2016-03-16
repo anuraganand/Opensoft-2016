@@ -62,7 +62,8 @@ def rearr(file):
 
 def main():
 	for file in glob.glob("*_plot.txt"):
-	    rearr(file)
+		print file
+		rearr(file)
 
 if __name__ == '__main__':
 	main()

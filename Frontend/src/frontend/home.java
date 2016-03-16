@@ -118,9 +118,9 @@ public class home extends javax.swing.JFrame {
                 if (isfilepicked !=0)
                 {
                     loadergif.setVisible(true);
-//                    loadPlots();
+                    loadPlots();
                     loadColorsAndLegends();
-//                      generateScalesAndData();
+                    generateScalesAndData();
                     generateOutput();
                 } 
                 else {
@@ -150,23 +150,25 @@ public class home extends javax.swing.JFrame {
     void loadPlots() {
         String[] cmd = {"sh", "-c", 
             "cd ../Backend/graph_extractor && ./opensoft"};
-        try {
-            Process p = Runtime.getRuntime().exec(cmd);
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(p.getErrorStream()) );
-            String line;
-            while ((line = in.readLine()) != null) {
-                System.err.println(line);
-            }
-            in.close();
-            System.err.println(Arrays.deepToString(cmd));
-            p.waitFor();
-            System.err.println("Plots loaded");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
+        System.err.println(Arrays.deepToString(cmd));
+        executeCommandSh(cmd);
+//        try {
+//            Process p = Runtime.getRuntime().exec(cmd);
+//            BufferedReader in = new BufferedReader(
+//                    new InputStreamReader(p.getErrorStream()) );
+//            String line;
+//            while ((line = in.readLine()) != null) {
+//                System.err.println(line);
+//            }
+//            in.close();
+//            System.err.println(Arrays.deepToString(cmd));
+//            p.waitFor();
+//            System.err.println("Plots loaded");
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        } catch (InterruptedException ex) {
+//            ex.printStackTrace();
+//        }
     }
     
     void loadColorsAndLegends() {
@@ -253,7 +255,9 @@ public class home extends javax.swing.JFrame {
                             executeCommandSh(cmd);
                             
                             cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
-                                    + "../../../testy";
+                                    + "python create_output.py";
+//                            executeCommandSh(cmd);
+                            
                         }
                     }
                 }
@@ -270,7 +274,7 @@ public class home extends javax.swing.JFrame {
         try {
             Process p = Runtime.getRuntime().exec(cmd);
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(p.getErrorStream()));
+                    new InputStreamReader(p.getInputStream()));
             String line;
             while ((line = in.readLine()) != null) {
                 System.err.println(line);
