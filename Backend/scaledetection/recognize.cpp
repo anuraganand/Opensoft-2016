@@ -20,6 +20,72 @@ struct wBox
     int y1;
     int y2; 
 };
+struct box
+{
+    int left,top,bottom,right;
+};
+void readVecotorCoordi(vector<box> boxvec)
+{
+    printf("yo");
+    int size = boxvec.size();
+    PIX  *pixs;
+    char *outText;
+    const char *filename = "croppedx.png";
+    const char *language = "eng";
+    const char *datapath = "/usr/src/tesseract-ocr/";
+    tesseract::PageSegMode pagesegmode = tesseract::PSM_SINGLE_COLUMN;  
+
+    /*read*/
+    if ( ( pixs = pixRead(filename) ) == NULL) 
+    {
+        printf("Unsupported image type of file %s.\n", filename);
+        exit(3);
+    }
+ 
+    /* turn of dictionaries -> only possible during init*/
+    GenericVector<STRING> vars_vec;
+    vars_vec.push_back("load_system_dawg");
+    vars_vec.push_back("load_freq_dawg");
+    vars_vec.push_back("load_punc_dawg");
+    vars_vec.push_back("load_number_dawg");
+    vars_vec.push_back("load_unambig_dawg");
+    vars_vec.push_back("load_bigram_dawg");
+    vars_vec.push_back("load_fixed_length_dawgs");
+ 
+    GenericVector<STRING> vars_values;
+    vars_values.push_back("F");
+    vars_values.push_back("F");
+    vars_values.push_back("F");
+    vars_values.push_back("F");
+    vars_values.push_back("F");
+    vars_values.push_back("F");
+    vars_values.push_back("F");
+ 
+    tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
+ 
+    api->Init(NULL, language, tesseract::OEM_DEFAULT,
+              NULL, 0, &vars_vec, &vars_values, false);
+
+    /* restrict to numbers*/
+    /*api->SetVariable("tessedit_char_whitelist","0123456789.");
+    api->SetVariable("language_model_penalty_non_dict_word", "0");*/
+    api->SetImage(pixs);
+    
+    int extend = 0;
+    for(int i = 0;i<size;i++)
+    {
+        api->SetRectangle(boxvec[i].left-extend,boxvec[i].top-extend,boxvec[i].right-boxvec[i].left+extend,boxvec[i].bottom-boxvec[i].top+extend);
+        outText = api-> GetUTF8Text();
+        cout<<"Text : "<<outText<<" "<<boxvec[i].left<<" "<<boxvec[i].top<<" "<<boxvec[i].right-boxvec[i].left<<" "<<boxvec[i].bottom-boxvec[i].top-extend<<"\n";
+    }
+
+   
+
+    /*Finish*/
+    api->End();
+    delete [] outText;
+    pixDestroy (&pixs);
+} 
 bool comparex(const wBox& b1,const wBox& b2)
 {
     if(b1.y1<b2.y1)
@@ -48,13 +114,27 @@ bool checkIfcompletelyblank(string in)
 
 void print(vector<wBox> v,int xaxis)
 {
+    if(xaxis>1)
+    {
+        for(int p=0;p<v.size();p++)
+            cout<<v[p].word<<" ";
+        return;
+    }
+    ofstream f;
     if(xaxis==1)
-        freopen("axisvals.txt","w",stdout);
+        f.open("axisvalsx.txt",ios::out);
     else
-        freopen("axisvals.txt","a",stdout);
-    printf("%c\n",xaxis==1?'x':'y');
+        f.open("axisvalsy.txt",ios::out);
+
+    f << (xaxis==1?"x":"y")<<"\n";
+    // printf("%c\n",xaxis==1?'x':'y');
     for(int j=0;j<v.size();j++)
-        cout<<v[j].word<<" "<<(xaxis==1?(v[j].x1+v[j].x2)/2:(v[j].y1+v[j].y2)/2)<<endl;
+    {
+        int tmp1;
+        tmp1 = (xaxis==1?(v[j].x1+v[j].x2)/2:(v[j].y1+v[j].y2)/2);
+        f << v[j].word << " " << tmp1 << "\n";
+    }
+    f.close();
     //printf("--------------------\n");
 }
 
@@ -120,14 +200,20 @@ int main(int argc, char **argv)
     api->SetImage(pixs);
     api2->SetVariable("language_model_penalty_non_dict_word", "0");
     api2->SetImage(pixs);
+    if(xaxis==-1)
+    {
+        ofstream fo;
+        fo.open("heading.txt",ios::out);
+        fo<<api2->GetUTF8Text()<<endl;
+        fo.close();
+        return 0;
+    }
     // cout<<api->GetHOCRText(1);
     // outText = api-> GetHOCRText(1);
     api->Recognize(0);
     api2->Recognize(0);
   tesseract::ResultIterator* ri = api->GetIterator();
   tesseract::PageIteratorLevel level = tesseract::RIL_WORD;
-  tesseract::ResultIterator* ri2 = api2->GetIterator();
-  tesseract::PageIteratorLevel level2 = tesseract::RIL_WORD;
   if (ri != 0) {
     do {
       const char* word = ri->GetUTF8Text(level);
@@ -157,6 +243,7 @@ int main(int argc, char **argv)
         tmp.push_back(data[0]);
         for(int i=1;i<data.size();i++)
         {
+            //cout<<data[i].word<<endl;
             if(abs(data[i].y1-curr)<=15)
             {
                 tmp.push_back(data[i]);
@@ -169,16 +256,16 @@ int main(int argc, char **argv)
                     print(tmp,1);
                      tmp.clear();
                     flag=1;
-                    break;
+                    //break;
+                    int nxt =i;
+                    curr=data[nxt].y1;
+                    tmp.push_back(data[nxt]);
+                    currlen=1;
                 }
-                else
-                {
-                    print(tmp,1);
-                    tmp.clear();
-                }
-                
             }
         }
+        print(tmp,3);
+        tmp.clear();
     }
     else
     {
@@ -200,18 +287,18 @@ int main(int argc, char **argv)
                 if(currlen>=1 && flag==0)
                 {
                     print(tmp,0);
-                    tmp.clear();
+                     tmp.clear();
                     flag=1;
-                    break;
+                    //break;
+                    int nxt =i;
+                    curr=data[nxt].x1;
+                    tmp.push_back(data[nxt]);
+                    currlen=1;
                 }
-                else
-                {
-                    print(tmp,0);
-                    tmp.clear();
-                }
-                
             }
         }
+        print(tmp,3);
+        tmp.clear();
     }
     /*parse and output to opfile*/
     //parse(outText);

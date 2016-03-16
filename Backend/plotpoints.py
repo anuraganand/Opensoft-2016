@@ -36,7 +36,7 @@ def plotpoints(file, filename):
 
 	infile = glob.glob1(os.getcwd(),"graph_[0-p]*.txt")[0]
 	print "infile ", infile
-	
+
 	content = open(infile).readlines()
 
 	content = [x.strip('\n') for x in content]
@@ -59,9 +59,16 @@ def plotpoints(file, filename):
 		if x[0] > xmin and x[0] < xmax and x[1] > ymax and x[1] < ymin:
 			pt1 = pt1 + [x]
 
-	with open('axisvals.txt') as axisvals:
-		cal = axisvals.readlines()
-	cal = [float(x.strip('\n')) for x in cal]
+	with open('axisvalsx.txt') as axisvals:
+		calx = axisvals.readlines()
+	with open('axisvalsy.txt') as axisvals:
+		caly = axisvals.readlines()	
+
+	# cal = [float(x.strip('\n')) for x in cal]
+	cal[0] = calx[0]
+	cal[1] = caly[0]
+	cal[2] = calx[2]
+	cal[3] = caly[2]
 	xfac=float((cal[2]-cal[0])/(xmax-xmin))
 	yfac=float((cal[3]-cal[1])/(ymin-ymax))
 	pt1=array(pt1).astype(float)
