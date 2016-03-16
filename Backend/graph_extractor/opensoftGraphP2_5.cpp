@@ -91,19 +91,19 @@ int main(int argc,char **argv){
 	int temp1=0;
 	temp1=DFS(minx,miny);
 	collectionPoints.push_back(make_pair(temp1,make_pair(minx,miny)));
-	printf("%d..%d\n",temp1,src.rows*src.cols);
+	// printf("%d..%d\n",temp1,src.rows*src.cols);
 	memset(pixels,0,sizeof(pixels));
 	temp1=DFS(minx,maxy);
 	collectionPoints.push_back(make_pair(temp1,make_pair(minx,maxy)));
-	printf("%d..%d\n",temp1,src.rows*src.cols);
+	// printf("%d..%d\n",temp1,src.rows*src.cols);
 	memset(pixels,0,sizeof(pixels));
 	temp1=DFS(maxx,miny);
 	collectionPoints.push_back(make_pair(temp1,make_pair(maxx,miny)));
-	printf("%d..%d\n",temp1,src.rows*src.cols);
+	// printf("%d..%d\n",temp1,src.rows*src.cols);
 	memset(pixels,0,sizeof(pixels));
 	temp1=DFS(maxx,maxy);
 	collectionPoints.push_back(make_pair(temp1,make_pair(maxx,maxy)));
-	printf("%d..%d\n",temp1,src.rows*src.cols);
+	// printf("%d..%d\n",temp1,src.rows*src.cols);
 	memset(pixels,0,sizeof(pixels));
 	minx=miny=INT_MAX;
 	maxx=maxy=-1;
@@ -148,7 +148,7 @@ int main(int argc,char **argv){
 	circle(src,(Point2f){maxx,maxy},1,Scalar(150,0,0), 2, 8, 0);
 
 
- 	printf("%d..%d..%d..%d\n",minx,miny,maxx,maxy);
+ 	// printf("%d..%d..%d..%d\n",minx,miny,maxx,maxy);
  	// namedWindow( "detected lines",  WINDOW_NORMAL);
  	// imshow("detected lines",src);
  	// waitKey(0);

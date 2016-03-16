@@ -44,7 +44,7 @@ int main(int argc, char ** argv)
     /*Mat temp;
     cvtColor(src, temp, CV_GRAY2BGR);*/
     Mat temp = src.clone();
-    printf("%d\n",src.channels());
+    // printf("%d\n",src.channels());
     for(i=0;i<temp.cols;i++){
         for(j=0;j<temp.rows;j++){
             temp.at<uchar>(j,i)=0;
@@ -74,9 +74,9 @@ int main(int argc, char ** argv)
         }
     }*/
 
-    for(map<int,int>::iterator it=mp1.begin();it!=mp1.end();it++){
-        printf("%d...%d\n",(*it).first,(*it).second);
-    }
+    // for(map<int,int>::iterator it=mp1.begin();it!=mp1.end();it++){
+    //     printf("%d...%d\n",(*it).first,(*it).second);
+    // }
 
     // for(i=0;i<src.cols;i++){
     //     for(j=0;j<min(src.cols-1-i+1,))
@@ -97,7 +97,7 @@ int main(int argc, char ** argv)
     // src = imread("contour_ticks.jpg", 0);
     Mat gray;
     gray = temp;
-    printf("%d..%d\n",gray.cols,gray.rows);
+    // printf("%d..%d\n",gray.cols,gray.rows);
     threshold(gray, gray,200, 255,THRESH_BINARY_INV); //Threshold the gray
     //imshow("gray",gray);
     int largest_area=0;
@@ -113,12 +113,12 @@ int main(int argc, char ** argv)
     vector<int> recCord;
     for( int i = 0; i< contours.size(); i++ )
     {
-        printf("herer\n");
-        printf("lol123123\n");
+        // printf("herer\n");
+        // printf("lol123123\n");
         //  Find the area of contour
         double a=contourArea( contours[i],false); 
-        printf("yolo\n");
-        printf("%.6lf\n",a);
+        // printf("yolo\n");
+        // printf("%.6lf\n",a);
         if(a>largest_area){
             largest_area=a;
             // Store the index of largest contour
@@ -127,7 +127,7 @@ int main(int argc, char ** argv)
             bounding_rect=boundingRect(contours[i]);
         }
         if(a > 10.0 && a<1000.0){
-            printf("lol\n");
+            // printf("lol\n");
             bounding_rect=boundingRect(contours[i]);
             int left = (double)bounding_rect.width/5000;
             int up = (double)bounding_rect.height/5000;

@@ -50,7 +50,7 @@ int main(){
 	fileName.clear();
 
 	while(fscanf(ftr,"%s",&name)!=EOF){
-		printf("%s->\n",name);
+		//printf("%s->\n",name);
 		string temp=name;
 		fileName.push_back(temp);
 	}
@@ -65,7 +65,7 @@ int main(){
 			ftr=fopen("temp3.txt","r");
 			char name[1024];
 			while(fscanf(ftr,"%s",&name)!=EOF){
-				printf("%s->\n",name);
+				//printf("%s->\n",name);
 				string temp=name;
 				files.push_back(temp);
 			}
@@ -75,7 +75,7 @@ int main(){
 				if(files[j][0]=='g' && files[j][files[j].size()-1]=='g' && files[j][files[j].size()-2]=='p'){
 					//now we have the image of the graph..now to get the data as well
 					string temp;
-					printf("herer\n");
+					//printf("herer\n");
 					for(int k=0;k<files[j].size();k++){
 						if(files[j][k]=='.'){
 							break;
@@ -109,7 +109,7 @@ int main(){
 			ftr=fopen("temp3.txt","r");
 			char name[1024];
 			while(fscanf(ftr,"%s",&name)!=EOF){
-				printf("%s->\n",name);
+				//printf("%s->\n",name);
 				string temp=name;
 				files.push_back(temp);
 			}
@@ -119,7 +119,7 @@ int main(){
 				if(files[j][0]=='g' && files[j][files[j].size()-1]=='g' && files[j][files[j].size()-2]=='p'){
 					//now we have the image of the graph..now to get the data as well
 					string temp;
-					printf("herer\n");
+					//printf("herer\n");
 					for(int k=0;k<files[j].size();k++){
 						if(files[j][k]=='.'){
 							break;
@@ -160,7 +160,7 @@ int main(){
 			ftr=fopen("temp3.txt","r");
 			char name[1024];
 			while(fscanf(ftr,"%s",&name)!=EOF){
-				printf("%s->\n",name);
+				//printf("%s->\n",name);
 				string temp=name;
 				files.push_back(temp);
 			}
@@ -170,7 +170,7 @@ int main(){
 				if(files[j][0]=='g' && files[j][files[j].size()-1]=='g' && files[j][files[j].size()-2]=='p'){
 					//now we have the image of the graph..now to get the data as well
 					string temp;
-					printf("herer\n");
+					//printf("herer\n");
 					for(int k=0;k<files[j].size();k++){
 						if(files[j][k]=='.'){
 							break;
