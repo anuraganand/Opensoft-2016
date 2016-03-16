@@ -354,11 +354,11 @@ string COLOR_IMAGES_PREF = "./";
 
 void separateColors(Mat& img) {
     Mat dst;
-    namedWindow("Input Image BGR", WINDOW_NORMAL);
-    imshow("Input Image BGR", img);
+    // namedWindow("Input Image BGR", WINDOW_NORMAL);
+    // imshow("Input Image BGR", img);
     cvtColor(img, img, CV_BGR2HSV);
-    namedWindow("Input Image HSV", WINDOW_NORMAL);
-    imshow("Input Image HSV", img);
+    // namedWindow("Input Image HSV", WINDOW_NORMAL);
+    // imshow("Input Image HSV", img);
 
     // namedWindow("Output Image", WINDOW_NORMAL);
     // imshow("Output Image", dst);
@@ -543,7 +543,7 @@ void loadLegendBoundaries(const string& path) {
 }
 
 int main(int argc, char const *argv[]) {
-    if(argc != 2) {
+    if(argc < 2) {
         cout <<"Provide [image file] [description file] [legend file]" << endl;
         return -1;
     }
@@ -579,8 +579,8 @@ int main(int argc, char const *argv[]) {
     }
     
     separateColors(image);
-    waitKey(0);
-    destroyAllWindows();
+    // waitKey(0);
+    // destroyAllWindows();
 
     return 0;
 }

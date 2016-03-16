@@ -24,68 +24,7 @@ struct box
 {
     int left,top,bottom,right;
 };
-void readVecotorCoordi(vector<box> boxvec)
-{
-    printf("yo");
-    int size = boxvec.size();
-    PIX  *pixs;
-    char *outText;
-    const char *filename = "croppedx.png";
-    const char *language = "eng";
-    const char *datapath = "/usr/src/tesseract-ocr/";
-    tesseract::PageSegMode pagesegmode = tesseract::PSM_SINGLE_COLUMN;  
 
-    /*read*/
-    if ( ( pixs = pixRead(filename) ) == NULL) 
-    {
-        printf("Unsupported image type of file %s.\n", filename);
-        exit(3);
-    }
- 
-    /* turn of dictionaries -> only possible during init*/
-    GenericVector<STRING> vars_vec;
-    vars_vec.push_back("load_system_dawg");
-    vars_vec.push_back("load_freq_dawg");
-    vars_vec.push_back("load_punc_dawg");
-    vars_vec.push_back("load_number_dawg");
-    vars_vec.push_back("load_unambig_dawg");
-    vars_vec.push_back("load_bigram_dawg");
-    vars_vec.push_back("load_fixed_length_dawgs");
- 
-    GenericVector<STRING> vars_values;
-    vars_values.push_back("F");
-    vars_values.push_back("F");
-    vars_values.push_back("F");
-    vars_values.push_back("F");
-    vars_values.push_back("F");
-    vars_values.push_back("F");
-    vars_values.push_back("F");
- 
-    tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
- 
-    api->Init(NULL, language, tesseract::OEM_DEFAULT,
-              NULL, 0, &vars_vec, &vars_values, false);
-
-    /* restrict to numbers*/
-    /*api->SetVariable("tessedit_char_whitelist","0123456789.");
-    api->SetVariable("language_model_penalty_non_dict_word", "0");*/
-    api->SetImage(pixs);
-    
-    int extend = 0;
-    for(int i = 0;i<size;i++)
-    {
-        api->SetRectangle(boxvec[i].left-extend,boxvec[i].top-extend,boxvec[i].right-boxvec[i].left+extend,boxvec[i].bottom-boxvec[i].top+extend);
-        outText = api-> GetUTF8Text();
-        cout<<"Text : "<<outText<<" "<<boxvec[i].left<<" "<<boxvec[i].top<<" "<<boxvec[i].right-boxvec[i].left<<" "<<boxvec[i].bottom-boxvec[i].top-extend<<"\n";
-    }
-
-   
-
-    /*Finish*/
-    api->End();
-    delete [] outText;
-    pixDestroy (&pixs);
-} 
 bool comparex(const wBox& b1,const wBox& b2)
 {
     if(b1.y1<b2.y1)
@@ -228,7 +167,7 @@ int main(int argc, char **argv)
       tmp.y1=y1;
       tmp.y2=y2;
       data.push_back(tmp);
-        //printf("%s %d %d %d %d\n",word, x1, y1, x2, y2);
+       // printf("%s %d %d %d %d\n",word, x1, y1, x2, y2);
         // rectangle(img,cvRect(x1,y1,x2-x1,y2-y1),CV_RGB(255,0,0));
       delete[] word;
     } while (ri->Next(level));
@@ -256,7 +195,7 @@ int main(int argc, char **argv)
                     print(tmp,1);
                      tmp.clear();
                     flag=1;
-                    //break;
+                    break;
                     int nxt =i;
                     curr=data[nxt].y1;
                     tmp.push_back(data[nxt]);
@@ -264,8 +203,11 @@ int main(int argc, char **argv)
                 }
             }
         }
-        print(tmp,3);
-        tmp.clear();
+        if(flag==0)
+        {
+            print(tmp,1);
+            tmp.clear();
+        }
     }
     else
     {
@@ -289,7 +231,7 @@ int main(int argc, char **argv)
                     print(tmp,0);
                      tmp.clear();
                     flag=1;
-                    //break;
+                    break;
                     int nxt =i;
                     curr=data[nxt].x1;
                     tmp.push_back(data[nxt]);
@@ -297,8 +239,11 @@ int main(int argc, char **argv)
                 }
             }
         }
-        print(tmp,3);
-        tmp.clear();
+        if(flag==0)
+        {
+            print(tmp,0);
+            tmp.clear();
+        }
     }
     /*parse and output to opfile*/
     //parse(outText);

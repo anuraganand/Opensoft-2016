@@ -7,22 +7,11 @@ import sys
 
 x_origin = 53+30
 y_origin = 473-20
-x_top = x_origin
 y_top = 43
-left_mosty = x_origin
-right_mosty = 0
-top_mosty = 0
-bottom_mosty = 0
-left_mostx = 0
-right_mostx = 577
-top_mostx = y_origin
-bottom_mostx = 0
-left_mostx_top = 0
-right_mostx_top = 0
-top_mostx_top = y_origin
-bottom_mostx_top = 0
+right_mostx=5
 
 input_points = open(sys.argv[2],"r")
+print sys.argv[2]
 ct=0
 for line in input_points:
   if ct==0:
@@ -36,8 +25,23 @@ for line in input_points:
   ct=ct+1
 input_points.close()
 
+left_mosty = x_origin
+right_mosty = 0
+top_mosty = y_origin
+x_top = x_origin
+bottom_mosty = 0
+left_mostx = x_origin
+right_mostx = 0
+top_mostx = y_origin
+bottom_mostx = 0
+left_mostx_top = x_origin
+right_mostx_top = 0
+top_mostx_top = y_origin
+bottom_mostx_top = 0
 # Load the image
-img = cv2.imread(sys.argv[1]);
+img = cv2.imread(sys.argv[1])
+print sys.argv[1]
+
 # extendr = cv2.row(img) / 20
 # extendc = cv2.col(img) / 20
 extendr = 0
@@ -159,6 +163,7 @@ if bottom_mostx_top==0:
   top_mostx_top=0
   bottom_mostx_top=1
 crop_yaxis = gray[top_mosty:bottom_mosty , left_mosty : right_mosty]
+print top_mostx,bottom_mostx , left_mostx , right_mostx
 crop_xaxis = gray[top_mostx:bottom_mostx , left_mostx : right_mostx]
 crop_xaxis_top = gray[top_mostx_top:bottom_mostx_top , left_mostx_top : right_mostx_top]
 # cv2.imshow('res',thresh_color)
@@ -169,3 +174,4 @@ cv2.imwrite("croppedy.png",crop_yaxis);
 cv2.imwrite("croppedx.png",crop_xaxis);
 # cv2.waitKey(0)
 cv2.destroyAllWindows()
+print "Hello"
