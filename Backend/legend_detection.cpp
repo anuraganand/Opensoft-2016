@@ -27,14 +27,18 @@ int main(int argc,char **argv)
 //     135 56
 // 135 600
 // 1000 600
-    Mat img = imread(argv[1]);
+    Mat img = imread(argv[1], CV_LOAD_IMAGE_COLOR);
+    if (!img.data) {
+        fprintf(stderr, "Reading %s failed.\n", argv[1]);
+        return -1;
+    }
     Mat gray;
     cvtColor(img,gray, CV_BGR2GRAY);
     FILE *f = fopen(argv[2],"r");
     int minx,miny,maxx,maxy;
     fscanf(f,"%d %d %d %d",&minx,&miny,&maxx,&maxy);
     fclose(f);
-    freopen("words.txt","w",stdout);
+    freopen(argv[3],"w",stdout);
    Pix *image = pixRead(argv[1]);
 
   tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
@@ -51,7 +55,7 @@ int main(int argc,char **argv)
       float conf = ri->Confidence(level);
       int x1, y1, x2, y2;
       ri->BoundingBox(level, &x1, &y1, &x2, &y2);
-      char tmp[50];
+      char tmp[500];
       strcpy(tmp,word);
       if(x1>minx && x2<maxx && y1>=miny && y2<=maxy && perc(tmp) && conf>50)
       {
@@ -71,8 +75,8 @@ int main(int argc,char **argv)
       delete[] word;
     } while (ri->Next(level));
   }
-  namedWindow("legend",0);
-  imshow("legend",img);
-  waitKey(0);
+  // namedWindow("legend",0);
+  // imshow("legend",img);
+  // waitKey(0);
     return 0;
 }
