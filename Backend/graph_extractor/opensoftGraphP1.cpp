@@ -110,9 +110,9 @@ void cutout(int minx,int miny,int maxx,int maxy){
 		width = maxcols-fx-1;
 	if((maxy+up) >= maxrows-1)
 		height = maxrows-fy-1;
-	printf("Coordi-> %d %d %d %d\n",minx,miny,maxx,maxy);
-	printf("cutout vals -> %d %d %d %d %d %d %d %d\n",fx+width,fy+height,maxcols,maxrows,width,height,left,up );
-	printf("Axis cutout values->%d %d %d---\n",minx,maxy,maxx-minx);
+	//printf("Coordi-> %d %d %d %d\n",minx,miny,maxx,maxy);
+	//printf("cutout vals -> %d %d %d %d %d %d %d %d\n",fx+width,fy+height,maxcols,maxrows,width,height,left,up );
+	//printf("Axis cutout values->%d %d %d---\n",minx,maxy,maxx-minx);
 
 	//insertIntoRectangle(fx/2.0,fy/2.0,width/2.0,height/2.0);
 	insertIntoRectangle(fx,fy,width,height,minx,miny,maxx,maxy);
@@ -130,15 +130,15 @@ void cutout(int minx,int miny,int maxx,int maxy){
 }
 
 void getImage(){
-	for(int index=0;index<connectedLines.size();index++){
-		printf("connectedLines %d---\n",connectedLines[index]);
-	}
-	printf("\n\n");
-	printf("size--->%d\n",connectedLines.size());
+	// for(int index=0;index<connectedLines.size();index++){
+	// 	printf("connectedLines %d---\n",connectedLines[index]);
+	// }
+	// printf("\n\n");
+	// printf("size--->%d\n",connectedLines.size());
 
 	if(connectedLines.size()>=2){
 		//if dosent work delete this section and return
-		printf("herer-->>>\n");
+		// printf("herer-->>>\n");
 		int minx=INT_MAX;
 		int maxx=-1;
 		int miny=INT_MAX;
@@ -170,11 +170,11 @@ void getImage(){
 			int vertc=0;
 			vector<Vec4i> hLines;
 			vector<Vec4i> vLines;
-			printf("%d--%d--%d--%d\n",l0[0],l0[1],l0[2],l0[3]);
-			printf("%d--%d--%d--%d\n",l1[0],l1[1],l1[2],l1[3]);
-			printf("%d--%d--%d--%d\n",l2[0],l2[1],l2[2],l2[3]);
+			// printf("%d--%d--%d--%d\n",l0[0],l0[1],l0[2],l0[3]);
+			// printf("%d--%d--%d--%d\n",l1[0],l1[1],l1[2],l1[3]);
+			// printf("%d--%d--%d--%d\n",l2[0],l2[1],l2[2],l2[3]);
 
-			printf("size is 3---\n");
+			// printf("size is 3---\n");
 			if(abs(l0[0]-l0[2])<=10){
 				vLines.push_back(l0);
 			}
@@ -193,11 +193,11 @@ void getImage(){
 			else{
 				hLines.push_back(l2);
 			}
-			printf("connected lines-->>><<-%d---%d\n",vLines.size(),hLines.size());
+			// printf("connected lines-->>><<-%d---%d\n",vLines.size(),hLines.size());
 
 			if(vLines.size()==2 && hLines.size()==1){
 				//qwe
-				printf("herer--\n");
+				// printf("herer--\n");
 				int minx=min(min(min(min(min(hLines[0][0],hLines[0][2]),vLines[1][0]),vLines[1][2]),vLines[0][0]),vLines[0][2]);
 				int miny=min(min(min(min(min(hLines[0][1],hLines[0][3]),vLines[1][1]),vLines[1][3]),vLines[0][1]),vLines[0][3]);
 				int maxx=max(max(max(max(max(hLines[0][0],hLines[0][2]),vLines[1][0]),vLines[1][2]),vLines[0][0]),vLines[0][2]);
@@ -206,7 +206,7 @@ void getImage(){
 
 			}
 			else if(vLines.size()==1 && hLines.size()==2){
-				printf("here---\n");
+				// printf("here---\n");
 				Vec4i uhorl;
 				Vec4i lhorl;
 				if(hLines[0][1]>hLines[1][1]){
@@ -218,7 +218,7 @@ void getImage(){
 					uhorl=hLines[1];
 				}
 				Vec4i verl=vLines[0];
-				printf("herer-->>");
+				// printf("herer-->>");
 				int minx=min(min(min(min(min(hLines[0][0],hLines[0][2]),hLines[1][0]),hLines[1][2]),vLines[0][0]),vLines[0][2]);
 				int miny=min(min(min(min(min(hLines[0][1],hLines[0][3]),hLines[1][1]),hLines[1][3]),vLines[0][1]),vLines[0][3]);
 				int maxx=max(max(max(max(max(hLines[0][0],hLines[0][2]),hLines[1][0]),hLines[1][2]),vLines[0][0]),vLines[0][2]);
@@ -233,10 +233,10 @@ void getImage(){
 			giveValues(l1,mappedLines[connectedLines[1]]);
 			giveValues(l2,mappedLines[connectedLines[2]]);
 			giveValues(l3,mappedLines[connectedLines[3]]);
-			printf("%d--%d--%d--%d\n",l0[0],l0[1],l0[2],l0[3]);
-			printf("%d--%d--%d--%d\n",l1[0],l1[1],l1[2],l1[3]);
-			printf("%d--%d--%d--%d\n",l2[0],l2[1],l2[2],l2[3]);
-			printf("%d--%d--%d--%d\n",l3[0],l3[1],l3[2],l3[3]);
+			// printf("%d--%d--%d--%d\n",l0[0],l0[1],l0[2],l0[3]);
+			// printf("%d--%d--%d--%d\n",l1[0],l1[1],l1[2],l1[3]);
+			// printf("%d--%d--%d--%d\n",l2[0],l2[1],l2[2],l2[3]);
+			// printf("%d--%d--%d--%d\n",l3[0],l3[1],l3[2],l3[3]);
 			if(abs(l0[0]-l0[2])<=10){
 				vLines.push_back(l0);
 			}
@@ -262,7 +262,7 @@ void getImage(){
 				hLines.push_back(l3);
 			}
 			//assert(vLines.size()==2 && hLines.size()==2);
-			printf("%d--%d\n",hLines.size(),vLines.size());
+			// printf("%d--%d\n",hLines.size(),vLines.size());
 			giveValues(l0,mappedLines[connectedLines[0]]);
 			giveValues(l1,mappedLines[connectedLines[1]]);
 			giveValues(l2,mappedLines[connectedLines[2]]);
@@ -275,7 +275,7 @@ void getImage(){
 
 		}
 		else if(connectedLines.size()>4){
-			printf("herer-->>>\n");
+			// printf("herer-->>>\n");
 			int minx=INT_MAX;
 			int maxx=-1;
 			int miny=INT_MAX;
@@ -299,7 +299,7 @@ void getImage(){
 
 void DFSLines(int u,int p){
 	visitedDFS[u]=true;
-	printf("int DFS->%d....",u);
+	// printf("int DFS->%d....",u);
 	connectedLines.push_back(u);
 	for(int index=0;index<linesNeighbour[u].size();index++){
 		if(!visitedDFS[linesNeighbour[u][index]]){
@@ -318,7 +318,7 @@ int parentFind(int index){
 void union1(int x,int y){
 	int x1=parentFind(x);
 	int y1=parentFind(y);
-	printf("-->>>%d....%d\n",x1,y1);
+	// printf("-->>>%d....%d\n",x1,y1);
 
 	if(x1!=y1){
 		if(childL[x1]>childL[y1]){
@@ -436,7 +436,7 @@ void onTrackbar()
 	cvtColor(dst, cdst, CV_GRAY2BGR);
 	HoughLinesP(dst, lines1, 1, CV_PI/180, thresh, thresh1, thresh2 );
 	lines = lines1;
-	printf("%d--->\n",lines.size());
+	// printf("%d--->\n",lines.size());
 	//This is to eliminate lines which are same
 	//
 	vector<pair<Vec4i,Vec4i> > intersection;
@@ -448,7 +448,7 @@ void onTrackbar()
 	imshow("detected lines",cdst);
 	 waitKey(0);
 	 exit(0);*/
-	printf("sizes  ---> %d\n", lines.size());
+	// printf("sizes  ---> %d\n", lines.size());
 	vector<Vec4i> bigLinesRemoved;
 	int yohe=0;
 	for(size_t i=0;i<lines.size();i++){
@@ -472,7 +472,7 @@ void onTrackbar()
 	}
 		
 	lines = bigLinesRemoved;
-	printf("sizes  ---> %d %d\n", yohe, lines.size());
+	// printf("sizes  ---> %d %d\n", yohe, lines.size());
 	//exit(0);
 	
 	memset(ffg,0,sizeof(ffg));
@@ -531,7 +531,7 @@ void onTrackbar()
 				count1++;
 				if(DoLineSegmentsIntersect(l[0],l[1],l[2],l[3],l1[0],l1[1],l1[2],l1[3]) ){
 					intersection.push_back(make_pair(l,l1));
-					printf("in intersection\n");
+					// printf("in intersection\n");
 				}
 			}
 		}
@@ -576,7 +576,7 @@ void onTrackbar()
 			Vec4i l=finalLines[index];
 			Vec4i l1=finalLines[index1];
 			if(abs(l[0]-l1[0])<=10 && abs(l[1]-l1[1])<=10 && abs(l[2]-l1[2])<=10 && abs(l[3]-l1[3])<=10){
-				printf("herer in union\n");
+				// printf("herer in union\n");
 				union1(linesMapped[make_pair(make_pair(make_pair(l[0],l[1]),l[2]),l[3])],linesMapped[make_pair(make_pair(make_pair(l1[0],l1[1]),l1[2]),l1[3])]);
 			}
 		}
@@ -589,12 +589,12 @@ void onTrackbar()
 		int index2=linesMapped[make_pair(make_pair(make_pair(l1[0],l1[1]),l1[2]),l1[3])];
 		linesNeighbour[parentFind(index1)].push_back(parentFind(index2));
 		linesNeighbour[parentFind(index2)].push_back(parentFind(index1));
-		printf("Edge between -> %d___%d\n",parentFind(index1),parentFind(index2));
+		// printf("Edge between -> %d___%d\n",parentFind(index1),parentFind(index2));
 	}
 
 	for(size_t index=0;index<indexLines;index++){
 		if(!visitedDFS[index]){
-			printf("in DFS--\n");
+			// printf("in DFS--\n");
 			DFSLines(index,-1);
 			getImage();
 			connectedLines.clear();
@@ -611,7 +611,7 @@ void onTrackbar()
 			}
 		}
 	}
-	printf("rectangles->%d\n",rectangles.size());
+	// printf("rectangles->%d\n",rectangles.size());
 
 	for(int i=0;i<rectangles.size();i++){
 		if(!enclosed[i]){
@@ -685,7 +685,7 @@ void onTrackbar()
 			strcpy(buf, "boundary");
 			strcat(buf,".txt");
 			FILE *ftr=fopen(buf,"w");
-			printf("path->%s\n",buf);
+			// printf("path->%s\n",buf);
 			fprintf(ftr,"%d\n",ltx1);
 			fprintf(ftr,"%d\n",lty1);
 			fprintf(ftr,"%d\n",rbx1);
@@ -700,7 +700,7 @@ void onTrackbar()
 		    circle(src,b,10,Scalar(0), 2, 8, 0);
 		    circle(src,c,10,Scalar(0), 2, 8, 0);
 		    circle(src,d,10,Scalar(0), 2, 8, 0);
-		    printf("%d---%d---%d---%d\n",ltx1,lty1,rbx1,rby1);
+		    // printf("%d---%d---%d---%d\n",ltx1,lty1,rbx1,rby1);
 
 		    // namedWindow( "Points",  WINDOW_NORMAL);
 		    // imshow("Points" , src);
@@ -709,20 +709,20 @@ void onTrackbar()
 	}
 	//end of code
 
-	printf("%d--->>>\n",count1);
+	// printf("%d--->>>\n",count1);
 
 
 	for(int i=0;i<intersection.size();i++){
 			Vec4i l1=intersection[i].first;
 			Vec4i l=intersection[i].second;
-			printf("here->%d\n",i);
+			// printf("here->%d\n",i);
 			line( cdst, Point(l1[0], l1[1]), Point(l1[2], l1[3]), Scalar(0,0,255), 3, CV_AA);
 			line( cdst, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, CV_AA);
 			//break;
 	}
 	// imshow("detected lines", cdst);
 	// waitKey(0);
-	cout << "kk" << endl;
+	// cout << "kk" << endl;
 	alreadyFunced=true;
 }
 

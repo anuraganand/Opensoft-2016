@@ -118,8 +118,8 @@ public class home extends javax.swing.JFrame {
                 if (isfilepicked !=0)
                 {
                     loadergif.setVisible(true);
-                    loadPlots();
-                    loadColorsAndLegends();
+//                    loadPlots();
+//                    loadColorsAndLegends();
                     generateScalesAndData();
                     generateOutput();
                 } 
@@ -256,9 +256,9 @@ public class home extends javax.swing.JFrame {
                             
                             cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
                                     + "python create_output.py";
-//                            executeCommandSh(cmd);
-                            
+                            executeCommandSh(cmd);
                         }
+                        
                     }
                 }
             }
@@ -267,7 +267,8 @@ public class home extends javax.swing.JFrame {
     }
     
     void generateOutput() {
-        
+        String[] cmd = {"sh", "-c", "python ../Backend/htmlpdfgen.py"};
+        executeCommandSh(cmd);
     }
     
     void executeCommandSh(String[] cmd) {
