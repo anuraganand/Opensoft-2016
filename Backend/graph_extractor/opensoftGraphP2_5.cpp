@@ -76,6 +76,7 @@ void DFStryall(int x,int y){
 int main(int argc,char **argv){
 	string nameGraph=argv[1];
 	string dataGraph=argv[2];
+	string finalPath=argv[3];
 	char buf[1024];
 	strcpy(buf,nameGraph.c_str());
 	src=imread(buf);
@@ -153,4 +154,7 @@ int main(int argc,char **argv){
  	// waitKey(0);
  	ftr=fopen(buf,"w");
  	fprintf(ftr, "%d\n%d\n%d\n%d\n",minx,miny,maxx,maxy);
+ 	strcpy(buf,finalPath.c_str());
+ 	ftr=fopen(buf,"w");
+  	fprintf(ftr, "%d\n%d\n%d\n%d\n",minx,miny,maxx,maxy);
 }

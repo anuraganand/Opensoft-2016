@@ -644,9 +644,11 @@ void onTrackbar()
 
 		    string dirnameused(dirname);
 			string name= dirnameused + "/graph_";
+			string graphname="graph_";
 			//cv::Mat imagecroppedAxes=src1(myRect1);
 			//string name1="graph_axes_";
 			name=name+to_string(countImages);
+			graphname=graphname+to_string(countImages);
 			countImages++;
 			//name1=name1+to_string(countImages);
 			//imshow(name,imagecropped);
@@ -655,7 +657,19 @@ void onTrackbar()
 			if (stat(dirname, &st) == -1) {
 			    mkdir(dirname, 0777);
 			}
+			string path;
+			path=path+name;
+			cout<<path<<"\n";
+			//while(1){};
+			//waitKey(0);
+			char buf1[1024];
+			strcpy(buf1,path.c_str());
+			if(stat(buf1,&st)==-1){
+				mkdir(buf1,0777);
+			}
 			cout << "file name---->>>> %s\n" + name+".jpg" << endl;
+			imwrite(path+"/"+graphname+".jpg",imagecropped);
+			imwrite(path+"/"+graphname+".png",imagecropped);
 			imwrite(name+".jpg",imagecropped);
 			imwrite(name+".png",imagecropped);
 

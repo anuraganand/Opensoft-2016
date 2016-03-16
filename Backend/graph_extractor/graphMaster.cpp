@@ -90,7 +90,7 @@ int main(){
 					char buf[1024];
 					strcpy(buf,command.c_str());
 					system(buf);
-					command="./opensoft2_5 "+fileName[i]+"/"+files[j]+" "+fileName[i]+"/"+temp+".txt";
+					command="./opensoft2_5 "+fileName[i]+"/"+files[j]+" "+fileName[i]+"/"+temp+".txt"+" "+fileName[i]+"/"+temp+"/"+temp+".txt";
 					strcpy(buf,command.c_str());
 					system(buf);
 					//running the second command too
