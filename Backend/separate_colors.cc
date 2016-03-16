@@ -12,8 +12,8 @@ using namespace cv;
 const int HSV_THRESH = 15;
 RNG rng(12345);
 
-int MIN_X, MAX_X;
-int MIN_Y, MAX_Y;
+int MIN_X = 0, MAX_X = 1e9;
+int MIN_Y = 0, MAX_Y = 1e9;
 
 int LEGEND_MIN_X, LEGEND_MIN_Y;
 int LEGEND_MAX_X, LEGEND_MAX_Y;
@@ -354,11 +354,11 @@ string COLOR_IMAGES_PREF = "./";
 
 void separateColors(Mat& img) {
     Mat dst;
-    // namedWindow("Input Image BGR", WINDOW_NORMAL);
-    // imshow("Input Image BGR", img);
+    namedWindow("Input Image BGR", WINDOW_NORMAL);
+    imshow("Input Image BGR", img);
     cvtColor(img, img, CV_BGR2HSV);
-    // namedWindow("Input Image HSV", WINDOW_NORMAL);
-    // imshow("Input Image HSV", img);
+    namedWindow("Input Image HSV", WINDOW_NORMAL);
+    imshow("Input Image HSV", img);
 
     // namedWindow("Output Image", WINDOW_NORMAL);
     // imshow("Output Image", dst);
@@ -393,7 +393,7 @@ void separateColors(Mat& img) {
     }
 
     sort(hueVals.rbegin(), hueVals.rend());
-
+    cerr << hueVals.size() << "\n";
     for (int i = 0; i < 30 and i < hueVals.size(); ++i) {
         printf("i : %d [%d]\n", i, hueVals[i].second);
     }
@@ -539,11 +539,11 @@ void loadLegendBoundaries(const string& path) {
         LEGEND_MAX_Y = max(LEGEND_MAX_Y, y2);
     }
 
-    printf("LEGEND [%d, %d] to [%d, %d]\n", LEGEND_MIN_X, LEGEND_MIN_Y, LEGEND_MAX_X, LEGEND_MAX_Y);
+    
 }
 
 int main(int argc, char const *argv[]) {
-    if(argc != 4) {
+    if(argc != 2) {
         cout <<"Provide [image file] [description file] [legend file]" << endl;
         return -1;
     }
@@ -554,7 +554,8 @@ int main(int argc, char const *argv[]) {
         return -1;
     }
 
-    loadBoundaries(argv[2]);
+    if (argc > 2)
+        loadBoundaries(argv[2]);
     MIN_X = max(MIN_X, 0);
     MAX_X = min(MAX_X, image.rows - 1);
 
@@ -563,7 +564,10 @@ int main(int argc, char const *argv[]) {
 
     LEGEND_MIN_X = LEGEND_MIN_Y = 1e9;
     LEGEND_MAX_X = LEGEND_MAX_Y = 0;
-    loadLegendBoundaries(argv[3]);
+    if (argc > 2)
+        loadLegendBoundaries(argv[3]);
+
+    printf("LEGEND [%d, %d] to [%d, %d]\n", LEGEND_MIN_X, LEGEND_MIN_Y, LEGEND_MAX_X, LEGEND_MAX_Y);
 
     isLegend.assign(image.rows, vector <bool>(image.cols, false));
 
@@ -575,8 +579,8 @@ int main(int argc, char const *argv[]) {
     }
     
     separateColors(image);
-    // waitKey(0);
-    // destroyAllWindows();
+    waitKey(0);
+    destroyAllWindows();
 
     return 0;
 }
