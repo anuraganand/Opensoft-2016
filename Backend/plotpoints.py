@@ -1,4 +1,3 @@
-import wx
 import numpy
 import warnings
 from numpy import array,mean,uint8
@@ -6,6 +5,7 @@ from PIL import Image
 import os
 import copy
 import glob
+import cv2
 
 noOfInterval = 15
 
@@ -28,7 +28,9 @@ def find_nearest(array,value):
 def plotpoints(file, filename):
 	filename = filename.split("_")[0]
 	im = numpy.asarray(Image.open(file))
-	size=wx.Image(file).GetSize()
+	im1 = cv2.imread(file)
+	width, height, channels = im1.shape
+	size = (height, width)
 	points = []
 	axes=[]
 
