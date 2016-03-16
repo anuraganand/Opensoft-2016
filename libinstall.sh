@@ -9,6 +9,11 @@ sudo apt-get --purge autoremove liblept4 -y
 #Installing Ghostscript
 sudo apt-get install ghostscript -y
 
+#Dependencies for ./autobuild in Leptonica-1.73
+sudo apt-get install libtool -y
+sudo apt-get install autotools-dev -y
+sudo apt-get install automake -y
+
 #Installing Leptonica-1.73
 tar -zxvf /Backend/leptonica-1.73.tar.gz
 cd leptonica-1.73
@@ -33,5 +38,12 @@ cd pyfpdf
 sudo python setup.py install
 
 
-# matplotlib
-# python-opencv
+
+#Installing Matplotlib and building it.
+sudo apt-get install python-matplotlib -y
+
+#Dependencies for Python-OpenCV
+sudo apt-get install libjpeg8-dev libtiff5-dev libjasper-dev libpng12-dev -y
+#Installing Python-OpenCV
+sudo apt-get install python-opencv -y
+
