@@ -19,7 +19,7 @@ def main():
 	pdf.add_page()
 	pdf.write_html(html)
 
-	pdf.output('html.pdf','F')
+	pdf.output('output.pdf','F')
 
 if __name__ == '__main__':
 	main()

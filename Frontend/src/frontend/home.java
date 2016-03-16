@@ -118,8 +118,8 @@ public class home extends javax.swing.JFrame {
                 if (isfilepicked !=0)
                 {
                     loadergif.setVisible(true);
-//                    loadPlots();
-//                    loadColorsAndLegends();
+                    loadPlots();
+                    loadColorsAndLegends();
                     generateScalesAndData();
                     generateOutput();
                 } 
@@ -236,7 +236,6 @@ public class home extends javax.swing.JFrame {
                             cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
                                     + "sh ../../../scaledetection/findaxis.sh " + base + ".png " + base + ".txt ";
 
-                            System.err.println(Arrays.deepToString(cmd));
                             executeCommandSh(cmd);
                             
                             cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
@@ -267,15 +266,25 @@ public class home extends javax.swing.JFrame {
     }
     
     void generateOutput() {
-        String[] cmd = {"sh", "-c", "python ../Backend/htmlpdfgen.py"};
+        String[] cmd = {"sh", "-c", "cd ../Backend && python ../Backend/htmlpdfgen.py"};
         executeCommandSh(cmd);
+        Desktop desktop = Desktop.getDesktop();
+        if (desktop.isSupported(Desktop.Action.OPEN)) {
+            try {
+                desktop.open(new File("../Backend/output.pdf"));
+            } catch (IOException ex) {
+                Logger.getLogger(home.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
     
     void executeCommandSh(String[] cmd) {
         try {
+            System.err.println(Arrays.deepToString(cmd));
+
             Process p = Runtime.getRuntime().exec(cmd);
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(p.getInputStream()));
+                    new InputStreamReader(p.getErrorStream()));
             String line;
             while ((line = in.readLine()) != null) {
                 System.err.println(line);

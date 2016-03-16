@@ -70,11 +70,11 @@ int main(){
 	pii t1;
 	while(fscanf(ftr,"%d",&temp)!=EOF){
 		if(i==0){
-			t1.y=temp;
+			t1.x=temp;
 			i=1-i;
 		}
 		else{
-			t1.x=temp;
+			t1.y=temp;
 			values.pb(t1);
 			i=1-i;
 		}
@@ -85,113 +85,9 @@ int main(){
 	}
 
 	sort(all(values));
-
-	For(i,0,values.size()-1){
-		int temp=abs(values[i].y-values[i+1].y);
-		mp1[temp]++;
-	}
-
-	int max1=-1;
-	int pos1=-1;
-	int sum1=0;
-	int count=0;
-
-	rep(t1,mp1){
-		if(t1.y>max1){
-			max1=t1.y;
-			pos1=t1.x;
-		}
-	}
-
-	vi answer1;
-	max1=-1;
-	debug;
-
-	vector<pair<double,double> > function;
-	vector<double> lol;
-	set<pair<int,int> > s1;
-	int width1=0;
-	int widthcount=0;
-
-	For(j,0,values.size()-1){
-		if(abs(values[j].y-values[j+1].y)==pos1){
-			width1+=abs(values[j].x-values[j+1].x);
-			widthcount++;
-			if(s1.find(values[j])==s1.end()){
-				s1.insert(values[j]);
-				function.pb(mp(values[j].x,values[j].y));
-			}
-			if(s1.find(values[j+1])==s1.end()){
-				s1.insert(values[j+1]);
-				function.pb(mp(values[j+1].x,values[j+1].y));
-			}
-		}
-	}
-	double pivot=(double)width1/(double)widthcount;
-	double temp2=0;
-	int k=i;
-	double min1=0;
-	double max11=0;
-	double max12=0;
-	for(int i=0;i<function.size();i++){
-		temp2=1;
-		k=i;
-		for(int j=0;j<function.size();j++){
-			if(k==j){
-				continue;
-			}
-			else{
-				temp2=temp2*(values[0].x-function[j].x)/(function[k].x-function[j].x);
-			}
-		}
-		lol.pb(temp2*function[i].y);
-	}
-
-	rep(t1,lol){
-		min1=min1+t1;
-	}
-	lol.clear();
-
-	for(int i=0;i<function.size();i++){
-		temp2=1;
-		k=i;
-		for(int j=0;j<function.size();j++){
-			if(k==j){
-				continue;
-			}
-			else{
-				temp2=temp2*(values[values.size()-1].x-function[j].x)/(function[k].x-function[j].x);
-			}
-		}
-		lol.pb(temp2*function[i].y);
-	}
-	rep(t1,lol){
-		max11+=t1;
-	}
-	lol.clear();
-
-	for(int i=0;i<function.size();i++){
-		temp2=1;
-		k=i;
-		for(int j=0;j<function.size();j++){
-			if(k==j){
-				continue;
-			}
-			else{
-				temp2=temp2*(values[values.size()-1].x+pivot-function[j].x)/(function[k].x-function[j].x);
-			}
-		}
-		lol.pb(temp2*function[i].y);
-	}
-	rep(t1,lol){
-		max12+=t1;
-	}
-
-	rep(t1,function){
-		cout<<t1.x<<" "<<t1.y<<"\n";
-	}
-
-	cout<<values[values.size()-1].x+pivot<<" "<<values[values.size()-1].x<<" "<<pos1<<"\n";
+	int min1=values[0].x;
+	int max11=values[values.size()-1].x;
+	int max12;
 	cout<<min1<<" "<<max11<<" "<<max12<<"\n";
 
 	FILE* p = fopen("axisvalxs.txt","w");
