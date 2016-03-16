@@ -106,19 +106,7 @@ void cutout(int minx,int miny,int maxx,int maxy){
 	printf("cutout vals -> %d %d %d %d %d %d %d %d\n",fx+width,fy+height,maxcols,maxrows,width,height,left,up );
 	printf("Axis cutout values->%d %d %d---\n",minx,maxy,maxx-minx);
 
-	//insertIntoRectangle(fx/2.0,fy/2.0,width/2.0,height/2.0);
 	insertIntoRectangle(fx,fy,width,height);
-	/*cv:: Rect myRect(fx/2.0,fy/2.0,width/2.0,height/2.0);
-	cv:: Rect myRect1(minx/2.0,maxy/2.0 - 10,(maxx-minx)/2.0,20);
-	cv::Mat imagecropped=src1(myRect);
-	string name="graph_";
-	cv::Mat imagecroppedAxes=src1(myRect1);
-	string name1="graph_axes_";
-	name=name+to_string(countImages);
-	name1=name1+to_string(countImages);
-	imshow(name,imagecropped);
-	//imshow(name1,imagecroppedAxes);
-	imwrite(name+".jpg",imagecropped);*/
 }
 
 void getImage(){
@@ -640,10 +628,7 @@ void onTrackbar()
 			    mkdir(dirname, 0777);
 			}
 			cout << "file name---->>>> %s\n" + name+".jpg" << endl;
-<<<<<<< HEAD
 			imwrite(name+".jpg",imagecropped);
-=======
->>>>>>> f9cf54826e04a8832bf2effd82f8f371e074c3ee
 			imwrite(name+".png",imagecropped);
 		}
 	}
