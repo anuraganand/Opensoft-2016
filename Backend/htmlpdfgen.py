@@ -12,7 +12,7 @@ def call_write(file):
 
 def main():
 	html = ''
-	for file in glob.glob("*_html.txt"):
+	for file in glob.glob("./graph*/test*/*_html.txt"):
 	    html = html + ''.join(call_write(file))
 	print html
 	pdf = MyFPDF()
