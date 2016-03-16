@@ -717,6 +717,6 @@ int main(int argc,char **argv){
  	Canny(src, dst, 50, 200, 3);
  	cvtColor(dst, cdst, CV_GRAY2BGR);
  	namedWindow( "detected lines",  WINDOW_NORMAL);
-    onTrackbar();
+    //onTrackbar();
     //waitKey(0);
 }

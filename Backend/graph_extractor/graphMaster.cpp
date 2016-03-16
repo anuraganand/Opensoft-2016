@@ -26,6 +26,7 @@ int main(){
 	
 	// system("g++ -std=c++11 -ggdb `pkg-config --cflags opencv` -o opensoft1 opensoftGraphP1.cpp `pkg-config --libs opencv`");
 	// system("g++ -std=c++11 -ggdb `pkg-config --cflags opencv` -o opensoft2 opensoftGraphP2.cpp `pkg-config --libs opencv`");
+	// system("g++ -std=c++11 -ggdb `pkg-config --cflags opencv` -o opensoft2_5  opensoftGraphP2_5.cpp `pkg-config --libs opencv`");
 	// system("g++ -std=c++11 -ggdb `pkg-config --cflags opencv` -o opensoft3X opensoftGraphP3X.cpp `pkg-config --libs opencv`");
 	// system("g++ -std=c++11 -ggdb `pkg-config --cflags opencv` -o opensoft3Y opensoftGraphP3Y.cpp `pkg-config --libs opencv`");
 	// system("g++ -std=c++11 -ggdb `pkg-config --cflags opencv` -o opensoft4X opensoftGraphP4X.cpp `pkg-config --libs opencv`");
@@ -87,6 +88,9 @@ int main(){
 
 					string command="./opensoft2 "+fileName[i]+"/"+files[j]+" "+fileName[i]+" "+temp+".txt";
 					char buf[1024];
+					strcpy(buf,command.c_str());
+					system(buf);
+					command="./opensoft2_5 "+fileName[i]+"/"+files[j]+" "+fileName[i]+"/"+temp+".txt";
 					strcpy(buf,command.c_str());
 					system(buf);
 					//running the second command too

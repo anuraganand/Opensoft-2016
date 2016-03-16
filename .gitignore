@@ -29,5 +29,6 @@
 Backend/graph_extractor/opensoft
 Backend/graph_extractor/opensoft1
 Backend/graph_extractor/opensoft2
+Backend/graph_extractor/temp*.txt
 
 Backend/test*/

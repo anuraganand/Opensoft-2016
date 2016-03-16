@@ -24,6 +24,8 @@ typedef struct node2{
 }rect;
 
 vector<rect> rectangles;
+vector<rect> rectanglesForAxes;
+
 Mat dst, cdst;
 Mat src,src1;
 int thresh = 120,thresh1=130,thresh2=20;
@@ -46,13 +48,19 @@ void giveValues(Vec4i &res,pair<pair<pair<int,int>,int>,int> a){
 	return ;
 }
 
-void insertIntoRectangle(int minx,int miny,int width,int height){
-	rect a;
+void insertIntoRectangle(int minx,int miny,int width,int height,int ltx,int lty,int rbx,int rby){
+	rect a,b;
 	a.lt={minx,miny};
 	a.lb={minx,miny+height};
 	a.rt={minx+width,miny};
 	a.rb={minx+width,miny+height};
 	rectangles.push_back(a);
+
+	b.lt={ltx,lty};
+	b.lb={ltx,rby};
+	b.rt={rbx,lty};
+	b.rb={rbx,rby};
+	rectanglesForAxes.push_back(b);
 }
 
 bool rectIntersect(rect a,rect b){
@@ -107,7 +115,7 @@ void cutout(int minx,int miny,int maxx,int maxy){
 	printf("Axis cutout values->%d %d %d---\n",minx,maxy,maxx-minx);
 
 	//insertIntoRectangle(fx/2.0,fy/2.0,width/2.0,height/2.0);
-	insertIntoRectangle(fx,fy,width,height);
+	insertIntoRectangle(fx,fy,width,height,minx,miny,maxx,maxy);
 	/*cv:: Rect myRect(fx/2.0,fy/2.0,width/2.0,height/2.0);
 	cv:: Rect myRect1(minx/2.0,maxy/2.0 - 10,(maxx-minx)/2.0,20);
 	cv::Mat imagecropped=src1(myRect);
@@ -540,6 +548,7 @@ void onTrackbar()
 		finalLines.push_back(intersection[index].first);
 		finalLines.push_back(intersection[index].second);
 	}
+
 	//finalLines now has the lines 
 
 	int indexLines=0;
@@ -606,10 +615,17 @@ void onTrackbar()
 
 	for(int i=0;i<rectangles.size();i++){
 		if(!enclosed[i]){
+			int ltx = rectangles[i].lt.first;
+			int lty = rectangles[i].lt.second;
+			int rbx = rectangles[i].rt.first;
+			int rby = rectangles[i].rb.second;
+
 			cv:: Rect myRect(rectangles[i].lt.first,rectangles[i].lt.second,rectangles[i].rt.first-rectangles[i].lt.first,rectangles[i].rb.second-rectangles[i].rt.second);
 			//cv:: Rect myRect1(minx/2.0,maxy/2.0 - 10,(maxx-minx)/2.0,20);
 			cv::Mat imagecropped=src1(myRect);
 			
+			
+
 			string delimiter = ".";
 		    char data[5][1000];
 		    int pos=0;
@@ -640,8 +656,42 @@ void onTrackbar()
 			    mkdir(dirname, 0777);
 			}
 			cout << "file name---->>>> %s\n" + name+".jpg" << endl;
-			imwrite(name+".png",imagecropped);
+
 			imwrite(name+".jpg",imagecropped);
+			imwrite(name+".png",imagecropped);
+
+
+			int ltx1,lty1,rbx1,rby1;
+			ltx1 = rectanglesForAxes[i].lt.first - ltx;
+			lty1 = rectanglesForAxes[i].lt.second - lty;
+			rbx1 = rectanglesForAxes[i].rb.first - ltx;
+			rby1 = rectanglesForAxes[i].rb.second - lty;
+
+			char buf[1024];
+			strcpy(buf,name.c_str());
+			strcat(buf,".txt");
+			FILE *ftr=fopen(buf,"w");
+			printf("path->%s\n",buf);
+			fprintf(ftr,"%d\n",ltx1);
+			fprintf(ftr,"%d\n",lty1);
+			fprintf(ftr,"%d\n",rbx1);
+			fprintf(ftr,"%d\n",rby1);
+			fclose(ftr);
+
+			Point2f a(rectanglesForAxes[i].lt.first,rectanglesForAxes[i].lt.second);
+		    Point2f b(rectanglesForAxes[i].rb.first,rectanglesForAxes[i].rb.second);
+		    Point2f c(rectanglesForAxes[i].lb.first,rectanglesForAxes[i].lb.second);
+		    Point2f d(rectanglesForAxes[i].rt.first,rectanglesForAxes[i].rt.second);
+		    circle(src,a,10,Scalar(0), 2, 8, 0);
+		    circle(src,b,10,Scalar(0), 2, 8, 0);
+		    circle(src,c,10,Scalar(0), 2, 8, 0);
+		    circle(src,d,10,Scalar(0), 2, 8, 0);
+		    printf("%d---%d---%d---%d\n",ltx1,lty1,rbx1,rby1);
+
+		    // namedWindow( "Points",  WINDOW_NORMAL);
+		    // imshow("Points" , src);
+		    // waitKey(0);
+>>>>>>> 9152d31140e0274c3672d8ea38916c5c54a89c61
 		}
 	}
 	//end of code
@@ -657,8 +707,8 @@ void onTrackbar()
 			line( cdst, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, CV_AA);
 			//break;
 	}
-	//imshow("detected lines", cdst);
-	//waitKey(0);
+	// imshow("detected lines", cdst);
+	// waitKey(0);
 	cout << "kk" << endl;
 	alreadyFunced=true;
 }
@@ -675,7 +725,7 @@ int main(int argc,char **argv){
 	//circle(src,a,500,Scalar(255), 2, 8, 0);
  	Canny(src, dst, 50, 200, 3);
  	cvtColor(dst, cdst, CV_GRAY2BGR);
- 	namedWindow( "detected lines",  WINDOW_NORMAL);
+ 	//namedWindow( "detected lines",  WINDOW_NORMAL);
     onTrackbar();
     //waitKey(0);
 }
