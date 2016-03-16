@@ -11,10 +11,10 @@ x_top = x_origin
 y_top = 43
 left_mosty = x_origin
 right_mosty = 0
-top_mosty = 0
+top_mosty = y_origin
 bottom_mosty = 0
-left_mostx = 0
-right_mostx = 577
+left_mostx = x_origin
+right_mostx = 0
 top_mostx = y_origin
 bottom_mostx = 0
 left_mostx_top = 0
@@ -34,6 +34,7 @@ for line in input_points:
   else:
     right_mostx = int(line)
   ct=ct+1
+print y_origin
 input_points.close()
 
 # Load the image
