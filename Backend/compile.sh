@@ -1,1 +1,1 @@
-g++ -std=c++0x $1 `pkg-config --cflags --libs opencv`
+g++ -std=c++0x $1 `pkg-config --cflags --libs opencv` -llept -ltesseract -o $2

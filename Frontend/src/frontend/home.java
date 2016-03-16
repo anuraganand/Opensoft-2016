@@ -120,6 +120,7 @@ public class home extends javax.swing.JFrame {
                     loadergif.setVisible(true);
 //                    loadPlots();
                     loadLegends();
+                    separateColors();
                 } 
                 else {
                     filename.setText("Pick a file first!");
@@ -151,7 +152,7 @@ public class home extends javax.swing.JFrame {
         try {
             Process p = Runtime.getRuntime().exec(cmd);
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(p.getInputStream()) );
+                    new InputStreamReader(p.getErrorStream()) );
             String line;
             while ((line = in.readLine()) != null) {
                 System.err.println(line);
@@ -168,46 +169,68 @@ public class home extends javax.swing.JFrame {
     }
     
     void loadLegends() {
-        File file = new File("../Backend/graph_extractor");
-        String[] names = file.list();
+        File home = new File("../Backend/graph_extractor");
+        String[] dirs = home.list();
         
-        
-        for(String name : names) {
-            if (name.startsWith("test_") && 
-                    new File("../Backend/graph_extractor/" + name).isDirectory()) {
-                String curPath = "../Backend/graph_extractor/" + name;
-                String[] localFiles = new File(curPath).list();
-                for (String fileName : localFiles) {
-                    if (fileName.endsWith(".png")) {
-                        String nm = fileName.split("\\.")[0];
-                        String pref = "graph_extractor/" + name + "/";
-                        System.err.println("file name " + nm);
-                        try {
-                            String[] cmd = {"sh", "-c", ""};
-                            cmd[2] = "cd ../Backend && ./legend_detection " 
-                                    + pref + nm + ".png " 
-                                    + pref + nm + ".txt "
-                                    + pref + nm + "_legend.txt";
-                            System.err.println(Arrays.deepToString(cmd));
-                            Process p = Runtime.getRuntime().exec(cmd);
-                            BufferedReader in = new BufferedReader(
-                                    new InputStreamReader(p.getErrorStream()));
-                            String line;
-                            while ((line = in.readLine()) != null) {
-                                System.err.println(line);
+        for(String dir : dirs) {
+            if (dir.startsWith("test_") && 
+                    new File("../Backend/graph_extractor/" + dir).isDirectory()) {
+                String[] subdirs = new File("../Backend/graph_extractor/" + dir).list();
+                for (String subdir : subdirs) {
+                    if (subdir.startsWith("graph_") &&
+                            new File("../Backend/graph_extractor/" + dir + "/" + subdir).isDirectory()) {
+                        String[] files = new File("../Backend/graph_extractor/" + dir + "/" + subdir).list();
+                        for (String file : files) if (file.endsWith(".png") && file.startsWith("graph_")){
+                            String base = file.split("\\.")[0];
+                            System.err.println("base : " + base);
+                            String pref = "graph_extractor/" + dir + "/" + subdir + "/";
+                            try {
+                                String[] cmd = {"sh", "-c", ""};
+                                cmd[2] = "cd ../Backend && ./legend_detection " 
+                                        + pref + base + ".png " 
+                                        + pref + base + ".txt "
+                                        + pref + base + "_legend.txt";
+                                System.err.println(Arrays.deepToString(cmd));
+                                Process p = Runtime.getRuntime().exec(cmd);
+                                BufferedReader in = new BufferedReader(
+                                        new InputStreamReader(p.getErrorStream()));
+                                String line;
+                                while ((line = in.readLine()) != null) {
+                                    System.err.println(line);
+                                }
+                                in.close();
+                                p.waitFor();
+                                
+                                cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
+                                        + "../../../separate_colors " + base + ".png " + base + ".txt "
+                                        + base + "_legend.txt";
+                                
+                                System.err.println(Arrays.deepToString(cmd));
+                                p = Runtime.getRuntime().exec(cmd);
+                                p.waitFor();
+                                
+                                cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
+                                        + "../../../match_legend " + base + ".png " + base + "_legend.txt "
+                                        + "colors.txt";
+                                System.err.println(Arrays.deepToString(cmd));
+                                p = Runtime.getRuntime().exec(cmd);
+                                p.waitFor();
+                                
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                            } catch (InterruptedException ex) {
+                                ex.printStackTrace();
                             }
-                            in.close();
-                            p.waitFor();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        } catch (InterruptedException ex) {
-                            ex.printStackTrace();
                         }
                     }
                 }
             }
         }
         System.err.println("Legends added");
+    }
+    
+    void separateColors() {
+        
     }
     /**
      * This method is called from within the constructor to initialize the form.
