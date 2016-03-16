@@ -263,22 +263,25 @@ void fillGaps(Mat& img) {
 
 void filterImage(Mat& img, Mat& mask) {
     long long satSum = 0;
+    long long valSum = 0;
     int cnt = 0;
     for (int x = 0; x < img.rows; ++x) {
         for (int y = 0; y < img.cols; ++y) {
             if (mask.at<uchar>(x, y) > 100) {
                 satSum += img.at<Vec3b>(x, y)[1];
+                valSum += img.at<Vec3b>(x, y)[2];
                 ++cnt;
             }
         }
     }
 
     satSum /= cnt;
+    valSum /= cnt;
 
     for (int x = 0; x < img.rows; ++x) {
         for (int y = 0; y < img.cols; ++y) {
             if (mask.at<uchar>(x, y) > 100) {
-                if (abs(satSum - img.at<Vec3b>(x, y)[1]) > 100)
+                if (abs(satSum - img.at<Vec3b>(x, y)[1]) > 100 or abs(valSum - img.at<Vec3b>(x, y)[2]) > 100)
                     mask.at<uchar>(x, y) = 0;
             }
         }
@@ -346,13 +349,16 @@ struct HSVColor {
     HSVColor(ll h, ll s, ll v) : h(h), s(s), v(v) {}
 };
 
+string COLOR_FILE_PATH = "colors.txt";
+string COLOR_IMAGES_PREF = "./";
+
 void separateColors(Mat& img) {
     Mat dst;
-    namedWindow("Input Image BGR", WINDOW_NORMAL);
-    imshow("Input Image BGR", img);
+    // namedWindow("Input Image BGR", WINDOW_NORMAL);
+    // imshow("Input Image BGR", img);
     cvtColor(img, img, CV_BGR2HSV);
-    namedWindow("Input Image HSV", WINDOW_NORMAL);
-    imshow("Input Image HSV", img);
+    // namedWindow("Input Image HSV", WINDOW_NORMAL);
+    // imshow("Input Image HSV", img);
 
     // namedWindow("Output Image", WINDOW_NORMAL);
     // imshow("Output Image", dst);
@@ -447,7 +453,7 @@ void separateColors(Mat& img) {
             }
         }
     }
-    cout << idxMap.size() << "\n";
+    // cout << idxMap.size() << "\n";
     vector <Mat> separated(idxMap.size());
     for (int i = 0; i < separated.size(); ++i) {
         separated[i] = Mat(img.rows, img.cols, CV_8UC1, Scalar(0));
@@ -477,8 +483,11 @@ void separateColors(Mat& img) {
     ofstream os("colors.txt");
     for (int i = 0; i < separated.size(); ++i) {
         if (cnt[i] < 200)
-            continue;
-        string win(1, 'a' + i);
+            continue;;
+
+        colorSums[i].h /= cnt[i];
+        colorSums[i].s /= cnt[i];
+        colorSums[i].v /= cnt[i];
 
         erode(separated[i]);
         dilate(separated[i]);
@@ -491,19 +500,20 @@ void separateColors(Mat& img) {
         if (countWhitePixels(separated[i]) < 150)
             continue;
 
-        // cerr << win << " " << countWhitePixels(separated[i]) << "\n";
+        char name[50];
+        sprintf(name, "color_%lld_%lld_%lld.png", colorSums[i].h, colorSums[i].s, colorSums[i].v);
 
-        namedWindow(win, WINDOW_NORMAL);
-        imshow(win, separated[i]);
+        cerr << name << " " << countWhitePixels(separated[i]) << "\n";
 
-        // showContours(separated[i]);
-        imwrite(win + ".png", separated[i]);
+        // namedWindow(name, WINDOW_NORMAL);
+        // imshow(name, separated[i]);
 
-       
-        colorSums[i].h /= cnt[i];
-        colorSums[i].s /= cnt[i];
-        colorSums[i].v /= cnt[i];
-        os << colorSums[i].h << " " << colorSums[i].s << " " << colorSums[i].v << endl;
+        // showContours(separated[i]);   
+
+        
+        imwrite(name, separated[i]);
+
+        os << colorSums[i].h << ' ' << colorSums[i].s << ' ' << colorSums[i].v << "\n";
     }
     os.close();
 }
@@ -534,7 +544,7 @@ void loadLegendBoundaries(const string& path) {
 
 int main(int argc, char const *argv[]) {
     if(argc != 4) {
-        cout <<"Provide image file, description file and legend file" << endl;
+        cout <<"Provide [image file] [description file] [legend file]" << endl;
         return -1;
     }
 
@@ -565,8 +575,8 @@ int main(int argc, char const *argv[]) {
     }
     
     separateColors(image);
-    waitKey(0);
-    destroyAllWindows();
+    // waitKey(0);
+    // destroyAllWindows();
 
     return 0;
 }
