@@ -26,6 +26,7 @@ def find_nearest(array,value):
 	return idx, idx1
 
 def plotpoints(file, filename):
+	# print filename
 	filename = filename.split("_")[0]
 	im = numpy.asarray(Image.open(file))
 	im1 = cv2.imread(file)
@@ -61,14 +62,20 @@ def plotpoints(file, filename):
 
 	with open('axisvalsx.txt') as axisvals:
 		calx = axisvals.readlines()
-	with open('axisvalsy.txt') as axisvals:
-		caly = axisvals.readlines()	
 
-	# cal = [float(x.strip('\n')) for x in cal]
-	cal[0] = calx[0]
-	cal[1] = caly[0]
-	cal[2] = calx[1]
-	cal[3] = caly[1]
+	with open('axisvalsy.txt') as axisvals1:
+		caly = axisvals1.readlines()
+	calx = [x.strip("\n") for x in calx]
+	caly = [y.strip("\n") for y in caly]
+	# print calx
+	# print caly
+	cal = []
+	cal.append(calx[0])
+	cal.append(caly[0])
+	cal.append(calx[1])
+	cal.append(caly[1])
+	cal = [float(x.strip('\n')) for x in cal]
+
 	xfac=float((cal[2]-cal[0])/(xmax-xmin))
 	yfac=float((cal[3]-cal[1])/(ymin-ymax))
 	pt1=array(pt1).astype(float)
@@ -86,6 +93,7 @@ def plotpoints(file, filename):
 	
 	for i in xrange(0,16):
 		val = minX + (interval * i)
+		# print val
 
 		closest, closest1 = (find_nearest(pt1[:,0], val))
 		if closest == -1 and closest1 == -1:
@@ -117,7 +125,7 @@ def plotpoints(file, filename):
 			singlePoint[0] = "%.5f" % (round(singlePoint[0], 5))
 			singlePoint[1] = "%.5f" % (round(singlePoint[1], 5))
 
-	with open(filename + '_plot.txt', 'a') as outfile:
+	with open(str(os.getcwd().split("graph_extractor",1)[1].replace("/","_")) + '_plot.txt', 'a') as outfile:
 		for point in newPt:
 			point = str(point)
 			point = point.strip('[')
@@ -132,10 +140,12 @@ pngCounter = len(glob.glob1(os.getcwd(),"*color*.png"))
 print glob.glob1(os.getcwd(),"*color*.png")
 
 for file in glob.glob("*color*.png"):
+	# print os.getcwd()
+	# print os.getcwd().split("graph_extractor",1)[1]
 	filename = str(file)
 	filename = os.path.splitext(filename)[0]
 	filename = filename.split("_")[0]
-	with open(filename + '_plot.txt', 'a') as outfile:
+	with open(str(os.getcwd().split("graph_extractor",1)[1].replace("/","_")) + '_plot.txt', 'a') as outfile:
 		outfile.write(str(pngCounter) + '\n')
 	break
 for file in glob.glob("*color*.png"):
