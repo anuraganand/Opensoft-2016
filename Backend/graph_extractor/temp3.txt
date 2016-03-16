@@ -1,2 +1,8 @@
+graph_0
 graph_0.jpg
+graph_0.png
+graph_0.txt
+graph_1
 graph_1.jpg
+graph_1.png
+graph_1.txt

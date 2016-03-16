@@ -7,10 +7,23 @@
 #include "opencv2/nonfree/nonfree.hpp"
 #include "opencv2/calib3d/calib3d.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 using namespace cv;
 using namespace std;
 
+struct stat st = {0};
+
+typedef struct node2{
+	pair<int,int> lt;
+	pair<int,int> lb;
+	pair<int,int> rt;
+	pair<int,int> rb;
+}rect;
+
+vector<rect> rectangles;
 Mat dst, cdst;
 Mat src,src1;
 int thresh = 120,thresh1=130,thresh2=20;
@@ -18,14 +31,15 @@ int ffg[100000];
 int parent[100001];
 int childL[100001];
 int visitedDFS[100001];
+char dirname[50];
 vector<int> connectedLines;
 vector<int> linesNeighbour[100001];
 map<int,pair<pair<pair<int,int>,int>,int> > mappedLines;
 bool alreadyFunced=false;
 int countImages=0;
-int minx,miny,maxx,maxy;
-string graphName;
 string directoryName;
+string graphName;
+int minx,miny,maxx,maxy;
 
 void giveValues(Vec4i &res,pair<pair<pair<int,int>,int>,int> a){
 	res[0]=a.first.first.first;
@@ -35,8 +49,79 @@ void giveValues(Vec4i &res,pair<pair<pair<int,int>,int>,int> a){
 	return ;
 }
 
+void insertIntoRectangle(int minx,int miny,int width,int height){
+	rect a;
+	a.lt={minx,miny};
+	a.lb={minx,miny+height};
+	a.rt={minx+width,miny};
+	a.rb={minx+width,miny+height};
+	rectangles.push_back(a);
+}
+
+bool rectIntersect(rect a,rect b){
+	bool p1,p2,p3,p4;
+	p1=p2=p3=p4=false;
+	if(a.lt.first<=b.lt.first && a.lt.second<=b.lt.second){
+		p1=true;
+	}
+	if(a.lb.first<=b.lb.first && a.lb.second>=b.lb.second){
+		p2=true;
+	}
+	if(a.rt.first>=b.rt.first && a.rt.second<=b.rt.second){
+		p3=true;
+	}
+	if(a.rb.first>=b.rb.first && a.rb.second>=b.rb.second){
+		p4=true;
+	}
+	if(p1 & p2 & p3 & p4){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+
 
 void cutout(int minx,int miny,int maxx,int maxy){
+	vector<pair<int,int> > points;
+	points.push_back(make_pair(minx,miny));
+	points.push_back(make_pair(minx,maxy));
+	points.push_back(make_pair(maxx,miny));
+	points.push_back(make_pair(maxx,maxy));
+
+	int left = 0;
+	int up = 0;
+	int fx,fy,height,width;
+	int maxrows = src.rows,maxcols = src.cols;
+	fx = (minx - left);
+	fy = (miny - up);
+	width = (maxx-minx+2*left);
+	height = (maxy-miny+2*up);
+	if( fx < 0)
+		fx = 0;
+	if(fy < 0)
+		fy = 0;
+	if((maxx+left) >= maxcols-1)
+		width = maxcols-fx-1;
+	if((maxy+up) >= maxrows-1)
+		height = maxrows-fy-1;
+	printf("Coordi-> %d %d %d %d\n",minx,miny,maxx,maxy);
+	printf("cutout vals -> %d %d %d %d %d %d %d %d\n",fx+width,fy+height,maxcols,maxrows,width,height,left,up );
+	printf("Axis cutout values->%d %d %d---\n",minx,maxy,maxx-minx);
+
+	//insertIntoRectangle(fx/2.0,fy/2.0,width/2.0,height/2.0);
+	insertIntoRectangle(fx,fy,width,height);
+	/*cv:: Rect myRect(fx/2.0,fy/2.0,width/2.0,height/2.0);
+	cv:: Rect myRect1(minx/2.0,maxy/2.0 - 10,(maxx-minx)/2.0,20);
+	cv::Mat imagecropped=src1(myRect);
+	string name="graph_";
+	cv::Mat imagecroppedAxes=src1(myRect1);
+	string name1="graph_axes_";
+	name=name+to_string(countImages);
+	name1=name1+to_string(countImages);
+	imshow(name,imagecropped);
+	//imshow(name1,imagecroppedAxes);
+	imwrite(name+".jpg",imagecropped);*/
 }
 
 void getImage(){
@@ -46,7 +131,7 @@ void getImage(){
 	printf("\n\n");
 	printf("size--->%d\n",connectedLines.size());
 
-	if(connectedLines.size()==2){
+	if(connectedLines.size()>=2){
 		//if dosent work delete this section and return
 		printf("herer-->>>\n");
 		int minx=INT_MAX;
@@ -64,19 +149,10 @@ void getImage(){
 		}
 		//qwe
 		cutout(minx,miny,maxx,maxy);
-		/*cout << "value x and y" << ((double)minx-maxx)/10 << " " << ((double)miny-maxy)/10 << endl;
-		int left = ((double)maxx-minx)/50;
-		int up = ((double)maxy-miny)/50;
 
-		cv:: Rect myRect(minx-left,miny-up,maxx-minx+(2*left),maxy-miny+(2*up));
-		cv::Mat imagecropped=src(myRect);
-		string name="test";
-		name=name+to_string(countImages);
-		imshow(name,imagecropped);
-		imwrite(name+".jpg",imagecropped);*/
-		countImages++;
+		//countImages++;
 	}
-	else{
+	else if(false){
 		Vec4i l0;
 		Vec4i l1;
 		Vec4i l2;
@@ -118,10 +194,11 @@ void getImage(){
 				//qwe
 				printf("herer--\n");
 				int minx=min(min(min(min(min(hLines[0][0],hLines[0][2]),vLines[1][0]),vLines[1][2]),vLines[0][0]),vLines[0][2]);
-				int miny=max(max(max(max(max(hLines[0][1],hLines[0][3]),vLines[1][1]),vLines[1][3]),vLines[0][1]),vLines[0][3]);
-				int maxx=min(min(min(min(min(hLines[0][0],hLines[0][2]),vLines[1][0]),vLines[1][2]),vLines[0][0]),vLines[0][2]);
+				int miny=min(min(min(min(min(hLines[0][1],hLines[0][3]),vLines[1][1]),vLines[1][3]),vLines[0][1]),vLines[0][3]);
+				int maxx=max(max(max(max(max(hLines[0][0],hLines[0][2]),vLines[1][0]),vLines[1][2]),vLines[0][0]),vLines[0][2]);
 				int maxy=max(max(max(max(max(hLines[0][1],hLines[0][3]),vLines[1][1]),vLines[1][3]),vLines[0][1]),vLines[0][3]);
 				cutout(minx,miny,maxx,maxy);
+
 			}
 			else if(vLines.size()==1 && hLines.size()==2){
 				printf("here---\n");
@@ -138,8 +215,8 @@ void getImage(){
 				Vec4i verl=vLines[0];
 				printf("herer-->>");
 				int minx=min(min(min(min(min(hLines[0][0],hLines[0][2]),hLines[1][0]),hLines[1][2]),vLines[0][0]),vLines[0][2]);
-				int miny=max(max(max(max(max(hLines[0][1],hLines[0][3]),hLines[1][1]),hLines[1][3]),vLines[0][1]),vLines[0][3]);
-				int maxx=min(min(min(min(min(hLines[0][0],hLines[0][2]),hLines[1][0]),hLines[1][2]),vLines[0][0]),vLines[0][2]);
+				int miny=min(min(min(min(min(hLines[0][1],hLines[0][3]),hLines[1][1]),hLines[1][3]),vLines[0][1]),vLines[0][3]);
+				int maxx=max(max(max(max(max(hLines[0][0],hLines[0][2]),hLines[1][0]),hLines[1][2]),vLines[0][0]),vLines[0][2]);
 				int maxy=max(max(max(max(max(hLines[0][1],hLines[0][3]),hLines[1][1]),hLines[1][3]),vLines[0][1]),vLines[0][3]);
 				cutout(minx,miny,maxx,maxy);
 			}
@@ -209,7 +286,8 @@ void getImage(){
 			}
 			//qwe
 			cutout(minx,miny,maxx,maxy);
-			countImages++;
+
+			//countImages++;
 		}
 	}
 }
@@ -248,8 +326,10 @@ void union1(int x,int y){
 		}
 	}
 }
+
+
 vector<Vec4i> lines;
-//mappingLineInt<Vec4i,int> mp1;
+
 vector<Vec4i> linesPerpendicular[100001];
 
 
@@ -369,6 +449,10 @@ void onTrackbar()
 	for(size_t i=0;i<lines.size();i++){
 		Vec4i l = lines[i];
 		int lenll = lenLine(l);
+		printf("lenl->%d ... row->%d...col->%d\n",lenll,src.rows,src.cols);
+		// line( src, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, CV_AA);
+		// imshow("detected lines",src);
+		// waitKey(0);
 		int threshlen = 50;
 		if(abs(l[0]-l[2])<=10){
 			if(lenll >= (src.rows-threshlen))
@@ -388,6 +472,8 @@ void onTrackbar()
 		
 	lines = bigLinesRemoved;
 	printf("sizes  ---> %d %d\n", yohe, lines.size());
+	// while(1){};
+	//exit(0);
 	//exit(0);
 	
 	memset(ffg,0,sizeof(ffg));
@@ -406,7 +492,7 @@ void onTrackbar()
 		for(size_t j=0;j<lines.size();j++){
 			if(i!=j){
 				Vec4i l1=lines[j];
-				int thres11=500;
+				int thres11=150;
 				if(abs(l[0]-l[2])<=10 && abs(l1[0]-l1[2])<=10){
 					int dist1=abs(l[0]-l1[0]);
 					int length1=abs(l[1]-l[3]);
@@ -446,7 +532,7 @@ void onTrackbar()
 				count1++;
 				if(DoLineSegmentsIntersect(l[0],l[1],l[2],l[3],l1[0],l1[1],l1[2],l1[3]) ){
 					intersection.push_back(make_pair(l,l1));
-					printf("in intersection\n");
+					//printf("in intersection\n");
 				}
 			}
 		}
@@ -490,7 +576,7 @@ void onTrackbar()
 			Vec4i l=finalLines[index];
 			Vec4i l1=finalLines[index1];
 			if(abs(l[0]-l1[0])<=10 && abs(l[1]-l1[1])<=10 && abs(l[2]-l1[2])<=10 && abs(l[3]-l1[3])<=10){
-				printf("herer in union\n");
+				//printf("herer in union\n");
 				union1(linesMapped[make_pair(make_pair(make_pair(l[0],l[1]),l[2]),l[3])],linesMapped[make_pair(make_pair(make_pair(l1[0],l1[1]),l1[2]),l1[3])]);
 			}
 		}
@@ -503,7 +589,7 @@ void onTrackbar()
 		int index2=linesMapped[make_pair(make_pair(make_pair(l1[0],l1[1]),l1[2]),l1[3])];
 		linesNeighbour[parentFind(index1)].push_back(parentFind(index2));
 		linesNeighbour[parentFind(index2)].push_back(parentFind(index1));
-		printf("Edge between -> %d___%d\n",parentFind(index1),parentFind(index2));
+		//printf("Edge between -> %d___%d\n",parentFind(index1),parentFind(index2));
 	}
 
 	for(size_t index=0;index<indexLines;index++){
@@ -514,12 +600,69 @@ void onTrackbar()
 			connectedLines.clear();
 		}
 	}
-	//end of code
 
-	printf("%d--->>>\n",count1);
-
+	bool enclosed[100001]={0};
+	for(int i=0;i<rectangles.size();i++){
+		for(int j=0;j<rectangles.size();j++){
+			if(i!=j){
+				if(rectIntersect(rectangles[i],rectangles[j])){
+					enclosed[j]=true;
+				}
+			}
+		}
+	}
+	printf("rectangles->%d\n",rectangles.size());
 	minx=miny=INT_MAX;
 	maxx=maxy=-1;
+
+	for(int i=0;i<rectangles.size();i++){
+		if(!enclosed[i]){
+			cv:: Rect myRect(rectangles[i].lt.first,rectangles[i].lt.second,rectangles[i].rt.first-rectangles[i].lt.first,rectangles[i].rb.second-rectangles[i].rt.second);
+			minx=min(minx,rectangles[i].lt.first);
+			miny=min(miny,rectangles[i].lt.second);
+			maxx=max(maxx,rectangles[i].rt.first);
+			maxy=max(maxy,rectangles[i].rb.second);
+			rectangle(src,myRect,Scalar(255),2,8,0);
+			//cv:: Rect myRect1(minx/2.0,maxy/2.0 - 10,(maxx-minx)/2.0,20);
+			cv::Mat imagecropped=src1(myRect);
+			
+			string delimiter = ".";
+		    char data[5][1000];
+		    int pos=0;
+		    string token;
+		    string total(dirname);
+		    int no=0;
+		    while ((pos = total.find(delimiter)) != std::string::npos)
+		    {
+		        token = total.substr(0, pos);
+		        strcpy(data[no++],token.c_str());
+		        total.erase(0, pos + delimiter.length());
+		    }
+		    strcpy(data[no++],total.c_str());
+
+		    strcpy(dirname,data[0]);
+
+		    string dirnameused(dirname);
+			string name= dirnameused + "/graph_";
+			//cv::Mat imagecroppedAxes=src1(myRect1);
+			//string name1="graph_axes_";
+			name=name+to_string(countImages);
+			countImages++;
+			//name1=name1+to_string(countImages);
+			//imshow(name,imagecropped);
+
+			//imshow(name1,imagecroppedAxes);
+			if (stat(dirname, &st) == -1) {
+			    mkdir(dirname, 0777);
+			}
+			//cout << "file name---->>>> %s\n" + name+".jpg" << endl;
+			//imwrite(name+".jpg",imagecropped);
+		}
+	}
+	//end of code
+
+	//printf("%d--->>>\n",count1);
+
 
 	for(int i=0;i<intersection.size();i++){
 			Vec4i l1=intersection[i].first;
@@ -527,14 +670,13 @@ void onTrackbar()
 			printf("here->%d\n",i);
 			line( cdst, Point(l1[0], l1[1]), Point(l1[2], l1[3]), Scalar(0,0,255), 3, CV_AA);
 			line( cdst, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, CV_AA);
-			minx=min(minx,min(l1[0],l1[2]));
-			maxx=max(maxx,max(l1[0],l1[2]));
-			miny=min(miny,min(l1[1],l1[3]));
-			maxy=max(maxy,max(l1[1],l1[3]));
+			//minx=min(minx,min(l1[0],l1[1]));
+			//minx=min(minx,min(l[0],l[2]));
 			//break;
 	}
-	//imshow("detected lines", cdst);
-	//waitKey(0);
+	// imshow("detected lines", cdst);
+	// waitKey(0);
+	cout << "kk" << endl;
 	cout << "kk" << endl;
 	char buf[1024];
 	graphName=graphName;
@@ -546,14 +688,23 @@ void onTrackbar()
 	fprintf(ftr,"%d\n",miny);
 	fprintf(ftr,"%d\n",maxx);
 	fprintf(ftr,"%d\n",maxy);
+	Point2f p1(minx,miny);
+	Point2f p2(minx,maxy);
+	Point2f p3(maxx,maxy);
+	Point2f p4(maxx,miny);
+	circle(src,p1,10,Scalar(255), 2, 8, 0);
+	circle(src,p2,10,Scalar(255), 2, 8, 0);
+	circle(src,p3,10,Scalar(255), 2, 8, 0);
+	circle(src,p4,10,Scalar(255), 2, 8, 0);
+	// imshow("detected lines",src);
+	// waitKey(0);
+
 	fclose(ftr);
 	alreadyFunced=true;
 }
 
-//iterate over all the files generated
 int main(int argc,char **argv){
 	vector<pair<float,int> > lv;
-
 	src= imread(argv[1]);
 	src1 = imread(argv[1]);
 	directoryName=argv[2];
@@ -565,11 +716,7 @@ int main(int argc,char **argv){
 	//circle(src,a,500,Scalar(255), 2, 8, 0);
  	Canny(src, dst, 50, 200, 3);
  	cvtColor(dst, cdst, CV_GRAY2BGR);
- 	//namedWindow( "detected lines",  WINDOW_NORMAL);
-    /*createTrackbar( "Threshold1", "detected lines", &thresh, 1000, onTrackbar);
-    createTrackbar( "Threshold2", "detected lines", &thresh1, 1000, onTrackbar1);
-    onTrackbar(thresh,0);
-    onTrackbar(thresh1,0);*/
-    onTrackbar();
+ 	namedWindow( "detected lines",  WINDOW_NORMAL);
+    //onTrackbar();
     //waitKey(0);
 }

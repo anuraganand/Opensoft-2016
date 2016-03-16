@@ -1,5 +1,0 @@
-test_001.png
-test_002.png
-test_003.png
-test_004.png
-test_005.png
