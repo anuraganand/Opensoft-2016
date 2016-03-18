@@ -28,24 +28,8 @@ using namespace std;
 #define R(x) (((x)<<1)+2)
 #define umap unordered_map
 //#define double long double
-#define mod 1000000007
-#define mod1 1000000009
-#define LIMIT 10000000000000000LL
-#define MAX1 1000000000
-//#define si(n) scanf("%d",&n)
-//#define sii(n,m) scanf("%d%d",&n,&m)
-//#define pi(n) printf("%d\n",n)
-const int inf=0x3f3f3f3f;
-const long double pi=acos(-1.0);
-#define INF 1000000000000000000LL
-#define MAX 1000005
-#define N 410
 const string debug_line="yolo";
 #define debug error(debug_line)
-const double PI=4*atan(1);
-#define read() freopen("mergedoutput.txt","r",stdin)
-#define write() freopen("output.txt","w",stdout)
-//template <typename T> using os =  tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 typedef long long ll;
 typedef pair<int,int>pii;
 typedef vector<int> vi;
@@ -62,7 +46,7 @@ int count1[1001];
 map<int,int> mp1;
 
 int main(){
-	FILE *ftr=fopen("axisvalxs.txt","r");
+	FILE *ftr=fopen("axisvalsx.txt","r");
 	char c[1001];
 	fscanf(ftr,"%s",c);
 	int temp;
@@ -70,11 +54,11 @@ int main(){
 	pii t1;
 	while(fscanf(ftr,"%d",&temp)!=EOF){
 		if(i==0){
-			t1.x=temp;
+			t1.y=temp;
 			i=1-i;
 		}
 		else{
-			t1.y=temp;
+			t1.x=temp;
 			values.pb(t1);
 			i=1-i;
 		}
@@ -85,12 +69,116 @@ int main(){
 	}
 
 	sort(all(values));
-	int min1=values[0].x;
-	int max11=values[values.size()-1].x;
-	int max12;
+
+	For(i,0,values.size()-1){
+		int temp=abs(values[i].y-values[i+1].y);
+		mp1[temp]++;
+	}
+
+	int max1=-1;
+	int pos1=-1;
+	int sum1=0;
+	int count=0;
+
+	rep(t1,mp1){
+		if(t1.y>max1){
+			max1=t1.y;
+			pos1=t1.x;
+		}
+	}
+
+	vi answer1;
+	max1=-1;
+	debug;
+
+	vector<pair<double,double> > function;
+	vector<double> lol;
+	set<pair<int,int> > s1;
+	int width1=0;
+	int widthcount=0;
+
+	For(j,0,values.size()-1){
+		if(abs(values[j].y-values[j+1].y)==pos1){
+			width1+=abs(values[j].x-values[j+1].x);
+			widthcount++;
+			if(s1.find(values[j])==s1.end()){
+				s1.insert(values[j]);
+				function.pb(mp(values[j].x,values[j].y));
+			}
+			if(s1.find(values[j+1])==s1.end()){
+				s1.insert(values[j+1]);
+				function.pb(mp(values[j+1].x,values[j+1].y));
+			}
+		}
+	}
+	double pivot=(double)width1/(double)widthcount;
+	double temp2=0;
+	int k=i;
+	double min1=0;
+	double max11=0;
+	double max12=0;
+	for(int i=0;i<function.size();i++){
+		temp2=1;
+		k=i;
+		for(int j=0;j<function.size();j++){
+			if(k==j){
+				continue;
+			}
+			else{
+				temp2=temp2*(values[0].x-function[j].x)/(function[k].x-function[j].x);
+			}
+		}
+		lol.pb(temp2*function[i].y);
+	}
+
+	rep(t1,lol){
+		min1=min1+t1;
+	}
+	lol.clear();
+
+	for(int i=0;i<function.size();i++){
+		temp2=1;
+		k=i;
+		for(int j=0;j<function.size();j++){
+			if(k==j){
+				continue;
+			}
+			else{
+				temp2=temp2*(values[values.size()-1].x-function[j].x)/(function[k].x-function[j].x);
+			}
+		}
+		lol.pb(temp2*function[i].y);
+	}
+	rep(t1,lol){
+		max11+=t1;
+	}
+	lol.clear();
+
+	for(int i=0;i<function.size();i++){
+		temp2=1;
+		k=i;
+		for(int j=0;j<function.size();j++){
+			if(k==j){
+				continue;
+			}
+			else{
+				temp2=temp2*(values[values.size()-1].x+pivot-function[j].x)/(function[k].x-function[j].x);
+			}
+		}
+		lol.pb(temp2*function[i].y);
+	}
+	rep(t1,lol){
+		max12+=t1;
+	}
+
+	rep(t1,function){
+		cout<<t1.x<<" "<<t1.y<<"\n";
+	}
+
+	cout<<values[values.size()-1].x+pivot<<" "<<values[values.size()-1].x<<" "<<pos1<<"\n";
 	cout<<min1<<" "<<max11<<" "<<max12<<"\n";
 
-	FILE* p = fopen("axisvalxs.txt","w");
+	FILE* p = fopen("axisvalsx.txt","w");
 	fprintf(p, "%.2lf\n%.2lf\n%.2lf",min1,max11,max12);
 	fclose(p);
 

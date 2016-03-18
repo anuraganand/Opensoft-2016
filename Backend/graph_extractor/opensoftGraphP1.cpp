@@ -682,7 +682,7 @@ void onTrackbar()
 			rby1 = rectanglesForAxes[i].rb.second - lty;
 
 			char buf[1024];
-			strcpy(buf, "boundary");
+			strcpy(buf, name.c_str());
 			strcat(buf,".txt");
 			FILE *ftr=fopen(buf,"w");
 			// printf("path->%s\n",buf);

@@ -134,7 +134,7 @@ int main(int argc, char **argv)
               NULL, 0, &vars_vec, &vars_values, false);
 
     /* restrict to numbers*/
-    api->SetVariable("tessedit_char_whitelist","0123456789.");
+    api->SetVariable("tessedit_char_whitelist","0123456789");
     api->SetVariable("language_model_penalty_non_dict_word", "0");
     api->SetImage(pixs);
     api2->SetVariable("language_model_penalty_non_dict_word", "0");

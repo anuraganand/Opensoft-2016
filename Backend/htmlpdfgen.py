@@ -11,7 +11,7 @@ def call_write(file):
 	return content
 
 def main():
-	html = ''
+	html = '<H1 align="center">TEAM 04</H1>'
 	for file in glob.glob("./graph*/test*/graph*/*_html.txt"):
 	    html = html + ''.join(call_write(file))
 	print html

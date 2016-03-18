@@ -244,17 +244,18 @@ public class home extends javax.swing.JFrame {
                             
                             cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
                                     + "../../../testy";
-                            
-                            cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
-                                    + "python plotpoints.py";
                             executeCommandSh(cmd);
                             
                             cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
-                                    + "python rearrange.py";
+                                    + "python ../../../plotpoints.py";
                             executeCommandSh(cmd);
                             
                             cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
-                                    + "python create_output.py";
+                                    + "python ../../../rearrange.py";
+                            executeCommandSh(cmd);
+                            
+                            cmd[2] = "cd ../Backend/graph_extractor/" + dir + "/" + subdir + " && "
+                                    + "python ../../../create_output.py";
                             executeCommandSh(cmd);
                         }
                         
@@ -266,7 +267,7 @@ public class home extends javax.swing.JFrame {
     }
     
     void generateOutput() {
-        String[] cmd = {"sh", "-c", "cd ../Backend && python ../Backend/htmlpdfgen.py"};
+        String[] cmd = {"sh", "-c", "cd ../Backend && cd ../Backend && python ../Backend/htmlpdfgen.py"};
         executeCommandSh(cmd);
         Desktop desktop = Desktop.getDesktop();
         if (desktop.isSupported(Desktop.Action.OPEN)) {
@@ -291,6 +292,7 @@ public class home extends javax.swing.JFrame {
             }
             in.close();
             p.waitFor();
+            System.err.println("Execution complete");
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (InterruptedException ex) {
@@ -328,7 +330,6 @@ public class home extends javax.swing.JFrame {
         setTitle("Welcome!");
         setMinimumSize(new java.awt.Dimension(1000, 750));
         setResizable(false);
-        setSize(new java.awt.Dimension(1000, 750));
 
         background.setMaximumSize(new java.awt.Dimension(1000, 750));
         background.setMinimumSize(new java.awt.Dimension(1000, 750));
@@ -350,7 +351,7 @@ public class home extends javax.swing.JFrame {
 
         hall.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         hall.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        hall.setText("TEAM XX");
+        hall.setText("TEAM 4");
         foreground.add(hall);
         hall.setBounds(5, 600, 910, 30);
 
