@@ -116,8 +116,9 @@ public class home extends javax.swing.JFrame {
             public void mouseClicked(MouseEvent e)  
             {
                 if (isfilepicked !=0)
-                {
                     loadergif.setVisible(true);
+                
+                if (isfilepicked != 0) {
                     loadPlots();
                     loadColorsAndLegends();
                     generateScalesAndData();
